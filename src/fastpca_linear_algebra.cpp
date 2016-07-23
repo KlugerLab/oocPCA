@@ -1,7 +1,14 @@
 #include "fastpca_linear_algebra.hpp"
 #include <math.h>
 #include <dlfcn.h>
+
+#ifdef __APPLE__
+#include <stdlib.h>
+#else
 #include <malloc.h>
+#endif
+
+
 
 int fastpca_gemm(CBLAS_ORDER layout, CBLAS_TRANSPOSE transposeA,
 		CBLAS_TRANSPOSE transposeB, const long long m, const long long n ,

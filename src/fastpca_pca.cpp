@@ -1,5 +1,4 @@
 #include <chrono>
-#include <malloc.h>
 #include "fastpca_pca.hpp"
 //#include "mkl_cblas_gcl.h"
 int fastpca_pca( long long k, long long l, 

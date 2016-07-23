@@ -1,5 +1,6 @@
 #include <climits>
 #include "InputMatrix.h"
+#include "fastpca_io.hpp"
 /*********************************************************************
  *  Implementation file for InputMatrix.  
  *  Please see the header file for extensive class documentation
@@ -161,6 +162,7 @@ bool InputMatrix::hasNext() {
 	//Case 1: This is the first iteration of a traversal, use the already
 	//loaded chunk
 	if (firstIt) {
+		//fastpca_debug_print("%s", "case 1");
 		firstIt = false;
 		return true;
 	}
@@ -168,6 +170,7 @@ bool InputMatrix::hasNext() {
 	//Case 2: This is the end of the traversal.  Prepare for the next
 	//traversal, and end this one by returning false
 	if((this->blockEnd % this->m) == this->traversalStart) {
+		//fastpca_debug_print("%s", "case 2");
 		firstIt = true;
 		this->traversalStart = this->blockStart;
 		return false;
@@ -177,21 +180,26 @@ bool InputMatrix::hasNext() {
 	//blockEnd == this->m does not mean the end of the matrix, since a
 	//traversal does not always start from zero. 
 	if (this->blockEnd == this->m) {
+		//fastpca_debug_print("%s", "case 3");
 		this->blockSize = this->calculatedBlockSize;
 		this->blockStart = 0;
 
 	//Case 4: Use the "Remainder Block"
 	}else if ( (this->m - this->blockEnd  ) == this->calculatedRemainderBlockSize ) {
+		//fastpca_debug_print("%s", "case 4");
 		this->blockSize = this->calculatedRemainderBlockSize;
 		this->blockStart = this->blockEnd;
 
 	//Case 5: Every other iteration, just add the normal block size
 	}else {
+		//fastpca_debug_print("%s", "case 5");
 		this->blockSize = this->calculatedBlockSize;
 		this->blockStart = this->blockEnd;
 	}
 	this->blockEnd = this->blockStart + this->blockSize;
 	loadNextBlock();
+	//fastpca_print_matrix("HasNextEnd", this->blockSize,this->n,this->block);
+	return true;
 }
 
 void InputMatrix::imputeMissingOn() {

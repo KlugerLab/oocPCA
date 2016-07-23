@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <math.h>
+#include "fastpca_io.hpp"
 /*********************************************************************
  *  Implementation file for InputMatrixEigenstrat.  
  *  Please see the header file for extensive class documentation
@@ -73,7 +74,6 @@ int InputMatrixEigenstrat::loadNextBlock() {
 		}else {
 			double temp;
 			temp  = ch - '0';
-			//printf("i,j: %i,%i=%lf\n", i,j, temp);
 
 			//Eigenstrat files' genotypes can only take on values 0,1,2, or 9 (for missing data)
 			if (temp != 0 && temp != 1 && temp != 2 && temp != 9) {
@@ -81,6 +81,7 @@ int InputMatrixEigenstrat::loadNextBlock() {
 				return -1;
 			}
 			(this->block)[(long long)i*n+j] = temp;
+//			printf("i,j: %i,%i=%lf (%lf)\n", i,j, temp,(this->block)[(long long)i*n+j] );
 			j++;
 		}
 	}

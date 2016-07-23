@@ -6,7 +6,7 @@
 #include "fastpca_pca.hpp"
 #include "fastpca_diffsnorm.hpp"
 #include <chrono>
-#include "omp.h"
+//#include "omp.h"
 #include "ezOptionParser.hpp"
 #include <iostream>
 #include <fstream>
@@ -18,8 +18,8 @@
 #include "InputMatrixEigenInCore.h"
 #include "InputMatrixCSV.h"
 #include <iostream>
-#include <malloc.h>
 #include <fstream>
+//export DYLD_LIBRARY_PATH="/opt/intel/compilers_and_libraries_2016.1.111/mac/compiler/lib/:/opt/intel/mkl/lib
 /*********************************************************************
  *  main() function to provide an interface for performing PCA and calculating the accuracy
  *  of said PCA, on GWAS data sets.
@@ -553,12 +553,14 @@ using namespace std::chrono;
 			fastpca_print_matrix("TestAfter", inputMatrix->blockSize,inputMatrix->n,inputMatrix->block);
 		}
 	}
+	//fastpca_debug_print("%s", "Should end here...\n");
+	//exit(-5);
 	fastpca_debug_print("%s", "Begin PCA...\n");
 	fastpca_debug_print("Running PCA with k=%lld, m=%e, n=%e, l=%lld, its=%d\n", k,(double)inputMatrix->m,(double)inputMatrix->n,l,its);
 	high_resolution_clock::time_point t_pca = high_resolution_clock::now();
-	double * U = (double *)memalign( 64, (long long) inputMatrix->m*k*sizeof( double ) );
-	double * S = (double *)memalign(64, (long long) k*k*sizeof( double ));
-	double * V = (double *)memalign( 64, (long long) k*inputMatrix->n*sizeof( double ));
+	double * U = (double *)fastpca_aligned_alloc( 64, (long long) inputMatrix->m*k*sizeof( double ) );
+	double * S = (double *)fastpca_aligned_alloc(64, (long long) k*k*sizeof( double ));
+	double * V = (double *)fastpca_aligned_alloc( 64, (long long) k*inputMatrix->n*sizeof( double ));
 
 	info = fastpca_pca(k,l, inputMatrix, U,S,V,its);
 	if (info <0 ) {

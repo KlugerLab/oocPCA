@@ -3,17 +3,23 @@
 #include "macros.h"
 #include <time.h>
 
-#ifdef USEMKL
-#include "mkl_lapacke.h"
-#include "mkl.h"
-#define USEMKL_TEST 1
+#ifdef USE_MKL
+#include <mkl_lapacke.h>
+#include <mkl_cblas.h>
 #else
-#include <cblas.h>
 #include <lapacke.h>
+#include <cblas.h>
 #define USEMKL_TEST 0
 #endif
 
-//#include <cblas.h>
+#ifdef __APPLE__
+//#include <Accelerate/Accelerate.h>
+//#define lapack_int              long long
+#include <stdlib.h>
+#else
+#include <malloc.h>
+#endif
+
 #include <stdlib.h>
 #include <chrono>
 #include <iostream>
