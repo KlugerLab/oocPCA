@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
+#SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+#SET(BUILD_SHARED_LIBRARIES OFF)
+#SET(CMAKE_EXE_LINKER_FLAGS "-static")
 
 set(Intel_Threading_Library           "/opt/intel/mkl/lib/libmkl_intel_thread.dylib")
 set(IOMP5           "/opt/intel/compilers_and_libraries_2016.1.111/mac/compiler/lib/libiomp5.dylib")
