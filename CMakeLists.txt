@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
+set(Intel_Threading_Library           "/opt/intel/mkl/lib/libmkl_intel_thread.dylib")
+set(IOMP5           "/opt/intel/compilers_and_libraries_2016.1.111/mac/compiler/lib/libiomp5.dylib")
 set(ARMA_USE_LAPACK           false)
 set(ARMA_USE_BLAS             false)
 set(ARMA_USE_ATLAS            false)
@@ -8,8 +10,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_au
 project(FastPCA)
 add_definitions(-DDEBUG)
 
-#Bring the headers, such as Student.h into the project
-include_directories(include)
 
 #Can manually add the sources using the set command as follows:
 #set(SOURCES src/mainapp.cpp src/Student.cpp)
@@ -35,15 +35,30 @@ endif()
 ##
 
 if(APPLE)
-  
   set(ARMA_OS macos)
+  include(ARMA_FindMKL)
+  message(STATUS "     MKL_FOUND = ${MKL_FOUND}"     )
+    add_definitions(-D__APPLE__)
+  if(MKL_FOUND )
+    
+    set(ARMA_LAPACKE_MKL_INCLUDE_DIR ${LAPACKE_MKL_INCLUDE_DIR})
+    message(STATUS "")
+    message(STATUS "ARMA_LAPACKE_MKL_INCLUDE_DIR = ${ARMA_LAPACKE_MKL_INCLUDE_DIR}")
+    
+    set(ARMA_LIBS ${ARMA_LIBS} ${MKL_LIBRARIES})
+    add_definitions(-DMKL_CUSTOM_LIBRARY="${MKL_LIBRARIES}")
+    add_definitions(-DUSE_MKL)
+
+
+    #add_definitions(-DMKL_CUSTOM_LIBRARY=fofo)
+  else()
   
-  set(ARMA_USE_LAPACK true)
-  set(ARMA_USE_BLAS   true)
+	  set(ARMA_LIBS ${ARMA_LIBS} "-framework Accelerate")  # or "-framework accelerate" ?
+	  add_definitions(-D__APPLE__)
+	  message(STATUS "MacOS X detected with no MKL. Added '-framework accelerate' to compiler flags")
   
-  set(ARMA_LIBS ${ARMA_LIBS} "-framework Accelerate")  # or "-framework accelerate" ?
-  message(STATUS "MacOS X detected. Added '-framework Accelerate' to compiler flags")
-  
+	  add_definitions(-DMKL_CUSTOM_LIBRARY="fofo")
+  endif()
   if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
     message(STATUS "Clang compiler on MacOS X detected. Added '-stdlib=libc++' to compiler flags")
@@ -145,6 +160,24 @@ endif()
 
 
 
+#Bring the headers, such as Student.h into the project
+include_directories(include ${ARMA_LAPACKE_MKL_INCLUDE_DIR})
 
 add_executable(fastpca.xx ${SOURCES})
+#set(ARMA_LIBS ${ARMA_LIBS} ${IOMP5})
+#set(ARMA_LIBS ${ARMA_LIBS} ${Intel_Threading_Library})
+
+#find_package(Threads REQUIRED)
+#if(THREADS_HAVE_PTHREAD_ARG)
+#set_property(TARGET fastpca.xx PROPERTY COMPILE_OPTIONS "-pthread")
+#set_property(TARGET fastpca.xx PROPERTY INTERFACE_COMPILE_OPTIONS "-pthread")
+#endif()
+#if(CMAKE_THREAD_LIBS_INIT)
+#target_link_libraries(fastpca.xx "${CMAKE_THREAD_LIBS_INIT}")
+#endif()
+
+#set_property(TARGET fastpca.xx PROPERTY COMPILE_OPTIONS "-Wl,-rpath,/opt/intel/mkl/lib")
+#set_property(TARGET fastpca.xx PROPERTY INTERFACE_COMPILE_OPTIONS "-Wl,-rpath,/opt/intel/mkl/lib")
+
+message(STATUS "ARMA_LIBS = ${ARMA_LIBS}")
 target_link_libraries( fastpca.xx ${ARMA_LIBS}  ${CMAKE_DL_LIBS})

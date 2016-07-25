@@ -5,10 +5,18 @@
 
 ## the link below explains why we're linking only with mkl_rt
 ## https://software.intel.com/en-us/articles/a-new-linking-model-single-dynamic-library-mkl_rt-since-intel-mkl-103
+find_path(LAPACKE_MKL_INCLUDE_DIR
+	NAMES lapacke_mkl.h
+	PATHS  /usr/local/include/
+	)
 
+#/opt/intel/compilers_and_libraries_2016.1.111/mac/mkl/include/
 set(MKL_NAMES ${MKL_NAMES} mkl_rt)
 #set(MKL_NAMES ${MKL_NAMES} mkl_lapack)
-#set(MKL_NAMES ${MKL_NAMES} mkl_intel_thread)
+
+#Need to do this in apple, maybe?
+#if(APPLE)
+#endif()
 #set(MKL_NAMES ${MKL_NAMES} mkl_core)
 #set(MKL_NAMES ${MKL_NAMES} guide)
 #set(MKL_NAMES ${MKL_NAMES} mkl)
