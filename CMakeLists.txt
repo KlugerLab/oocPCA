@@ -14,12 +14,14 @@ project(FastPCA)
 add_definitions(-DDEBUG)
 
 
-#Can manually add the sources using the set command as follows:
-#set(SOURCES src/mainapp.cpp src/Student.cpp)
 
 #However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "src/*.cpp")
 
+
+#Can manually add the sources using the set command as follows:
+#TODO: If BUIDLR
+set(SOURCES ${SOURCES} Rsrc/fastRPCA.cpp)
 
 
 include(CheckCXXCompilerFlag)
@@ -77,7 +79,7 @@ else()
   include(ARMA_FindBLAS)
   include(ARMA_FindLAPACK)
   
-  set(MKL_FOUND           false)
+  #set(MKL_FOUND           false)
   message(STATUS "     MKL_FOUND = ${MKL_FOUND}"     )
   message(STATUS "OpenBLAS_FOUND = ${OpenBLAS_FOUND}")
   message(STATUS "   ATLAS_FOUND = ${ATLAS_FOUND}"   )
@@ -167,6 +169,7 @@ endif()
 include_directories(include ${ARMA_LAPACKE_MKL_INCLUDE_DIR})
 
 add_executable(fastpca.xx ${SOURCES})
+add_library(fastpca SHARED ${SOURCES})
 #set(ARMA_LIBS ${ARMA_LIBS} ${IOMP5})
 #set(ARMA_LIBS ${ARMA_LIBS} ${Intel_Threading_Library})
 
@@ -184,3 +187,4 @@ add_executable(fastpca.xx ${SOURCES})
 
 message(STATUS "ARMA_LIBS = ${ARMA_LIBS}")
 target_link_libraries( fastpca.xx ${ARMA_LIBS}  ${CMAKE_DL_LIBS})
+target_link_libraries( fastpca ${ARMA_LIBS}  ${CMAKE_DL_LIBS})
