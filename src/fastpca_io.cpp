@@ -9,7 +9,8 @@ int fastpca_print_matrix( const char* desc, long long m, long long n, double* A 
 	   for( i =0; i < m; i++ ) {
 		   for( j = 0; j < n; j++ ) {
 		   
-		   printf( " %6.12f", A[i*n+j] );
+//		   printf( " %6.12f", A[i*n+j] );
+		   printf( " %6.2f", A[i*n+j] );
 		   totalCount++;
 		if (isnan(A[i*n_long+j] )) {
 			fastpca_debug_print ("A DOES HAVE A NAN AT %lld %lld", i,j);

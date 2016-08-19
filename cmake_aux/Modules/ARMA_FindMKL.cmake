@@ -11,8 +11,12 @@ find_path(LAPACKE_MKL_INCLUDE_DIR
 	)
 
 #/opt/intel/compilers_and_libraries_2016.1.111/mac/mkl/include/
+#
+ #-Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
+#set(MKL_NAMES ${MKL_NAMES} libmkl_intel_ilp64.a )
+#set(MKL_NAMES ${MKL_NAMES} libmkl_core.a)
+#set(MKL_NAMES ${MKL_NAMES} libmkl_intel_thread.a)
 set(MKL_NAMES ${MKL_NAMES} mkl_rt)
-#set(MKL_NAMES ${MKL_NAMES} mkl_lapack)
 
 #Need to do this in apple, maybe?
 #if(APPLE)

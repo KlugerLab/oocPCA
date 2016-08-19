@@ -21,7 +21,7 @@ file(GLOB SOURCES "src/*.cpp")
 
 #Can manually add the sources using the set command as follows:
 #TODO: If BUIDLR
-set(SOURCES ${SOURCES} Rsrc/fastRPCA.cpp)
+#set(SOURCES ${SOURCES} Rsrc/fastRPCA.cpp)
 
 
 include(CheckCXXCompilerFlag)
@@ -104,8 +104,12 @@ else()
     message(STATUS "*** See README.txt for more information")
     message(STATUS "")
     
-    set(ARMA_LIBS ${ARMA_LIBS} ${MKL_LIBRARIES})
-    add_definitions(-DMKL_CUSTOM_LIBRARY="${MKL_LIBRARIES}")
+#    set(ARMA_LIBS ${ARMA_LIBS} ${MKL_LIBRARIES})
+      message(STATUS "NOT LINKING!!")
+    set(ARMA_LIBS ${ARMA_LIBS} /lib/libcustommkldist.so libiomp5.so libdl.so libpthread.so libm.so)
+    #set(ARMA_LIBS ${ARMA_LIBS} libcustom_mkldist.so)
+    #set(ARMA_LIBS ${ARMA_LIBS})
+    add_definitions(-DMKL_CUSTOM_LIBRARY="/lib/libcustommkldist.so")
     #add_definitions(-DMKL_CUSTOM_LIBRARY=fofo)
     
   else()
@@ -188,3 +192,5 @@ add_library(fastpca SHARED ${SOURCES})
 message(STATUS "ARMA_LIBS = ${ARMA_LIBS}")
 target_link_libraries( fastpca.xx ${ARMA_LIBS}  ${CMAKE_DL_LIBS})
 target_link_libraries( fastpca ${ARMA_LIBS}  ${CMAKE_DL_LIBS})
+message(STATUS "Test  ${ARMA_LIBS}")
+message(STATUS "Test  ${CMAKE_DL_LIBS}")

@@ -1,0 +1,67 @@
+library(Rcpp);
+#LD_LIBRARY_PATH=/opt/intel/composer_xe_2016/mkl/lib/intel64::/home/george/software/MATLAB2014a/bin/glnxa64/::/data/Linderman/FastPCA4/build
+#dyn.load("../build/libfastpca.so", local=TRUE); 
+dyn.load("fastRPCA.so", local=TRUE); 
+
+fastPCA_base <- function(result, k) { result$U <- t(matrix(result$U, ncol = result$dim[1], nrow = k))
+	result$V <- t(matrix(result$V, ncol = result$dim[2], nrow = k))
+	result$S <- matrix(result$S, ncol = k, nrow = k)
+	return (result);
+
+}
+fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=0,centeringRow=0, centeringColumn = 0) {
+	if (missing(l)){
+		l = k+2;
+	}
+	#Swapping n and m becaue it is column major.  So, the U will be the V and vice versa.
+	n = nrow(inputMatrix);
+	m = ncol(inputMatrix);
+	
+	mem= m*n*8+1e+9;
+
+	print("About to call");
+	result = .Call( 'fastRPCA','memory', as.matrix(inputMatrix), m, n, k,l,its, mem,centeringRow, centeringColumn,diffsnorm);
+	V<- t(matrix(result$U, ncol = m, nrow = k))
+	result$U <- t(matrix(result$V, ncol = n, nrow = k))
+	result$V <-  V;
+	result$S <- matrix(result$S, ncol = k, nrow = k)
+	return (result)
+
+}
+fastPCA_CSV <- function (inputFile,k=5, mem=144, l=5, its=2,diffsnorm=0,centeringRow=0, centeringColumn = 0) {
+	result = .Call( 'fastRPCA','csv', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm);
+	return (fastPCA_base(result, k));
+
+}
+fastPCA_Phenos <- function (inputFile) {
+
+
+}
+fastPCA_BED <- function (inputFile,k=5, mem=144, l=5, its=2,phenoFile=-1, diffsnorm=0,centeringRow=0, centeringColumn = 0) {
+
+	result = .Call( 'fastRPCA','bed', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm);
+	result$U <- t(matrix(result$U, ncol = result$dim[1], nrow = k))
+	result$V <- t(matrix(result$V, ncol = result$dim[2], nrow = k))
+	result$S <- matrix(result$S, ncol = k, nrow = k)
+	fam <- read.table(paste(inputFile,'.fam', sep=""), sep=" ", header=FALSE);
+	row.names(result$V) <- fam[,2];
+
+	#TODO: make this an optional argument to this function
+	if (phenoFile != -1) {
+		phenos <- read.table(phenoFile, header=TRUE);
+		row.names(phenos) <- phenos$SUBJID;
+		result$phenos = phenos[row.names(result$V),];
+	}
+	return (result);
+
+}
+
+fastPCA_EIGEN <- function (inputFile,k=5, mem=144, l=5, its=2,diffsnorm=0,centering=0) {
+
+	result = .Call( 'fastRPCA','eigen', inputFile, -1, -1, k,l,its, mem,centering,diffsnorm);
+	result$U <- t(matrix(result$U, ncol = result$dim[1], nrow = k))
+	result$V <- t(matrix(result$V, ncol = result$dim[2], nrow = k))
+	result$S <- matrix(result$S, ncol = k, nrow = k)
+	return (result);
+
+}
