@@ -106,10 +106,14 @@ else()
     
 #    set(ARMA_LIBS ${ARMA_LIBS} ${MKL_LIBRARIES})
       message(STATUS "NOT LINKING!!")
-    set(ARMA_LIBS ${ARMA_LIBS} /lib/libcustommkldist.so libiomp5.so libdl.so libpthread.so libm.so)
+
+      #list(APPEND CMAKE_PREFIX_PATH "./")
+
+      #make libintel64 export=mkl_fxn_list name=/data/Linderman/FastPCA4/lib/libfastpca_custommkl
+    set(ARMA_LIBS ${ARMA_LIBS} /data/Linderman/FastPCA4/lib/libfastpca_custommkl.so)
     #set(ARMA_LIBS ${ARMA_LIBS} libcustom_mkldist.so)
     #set(ARMA_LIBS ${ARMA_LIBS})
-    add_definitions(-DMKL_CUSTOM_LIBRARY="/lib/libcustommkldist.so")
+    add_definitions(-DMKL_CUSTOM_LIBRARY="libfastpca_custommkl.so")
     #add_definitions(-DMKL_CUSTOM_LIBRARY=fofo)
     
   else()
@@ -194,3 +198,7 @@ target_link_libraries( fastpca.xx ${ARMA_LIBS}  ${CMAKE_DL_LIBS})
 target_link_libraries( fastpca ${ARMA_LIBS}  ${CMAKE_DL_LIBS})
 message(STATUS "Test  ${ARMA_LIBS}")
 message(STATUS "Test  ${CMAKE_DL_LIBS}")
+
+
+#install(FILES lib/libcustommkldist_local.so lib/libiomp5.so DESTINATION /lib/libfastpca.so)
+

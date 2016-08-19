@@ -1,0 +1,13 @@
+mkl_malloc
+LAPACKE_dgesdd
+MKL_Dimatcopy
+MKL_Set_Num_Threads
+MKL_Set_Dynamic
+LAPACKE_dorgqr
+LAPACKE_dgeqrf
+LAPACKE_dgetrf
+cblas_dnrm2
+cblas_dgemm
+MKL_free
+MKL_Domain_Set_Num_Threads
+
