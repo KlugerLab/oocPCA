@@ -1,0 +1,4 @@
+useDynLib(libfastpca)
+useDynLib(fastRPCA)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
