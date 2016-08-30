@@ -1,10 +1,13 @@
 #setwd('/data/Linderman/FastPCA4/Rsrc/')
+#install_github("KlugerLab/FastPCA",subdir="fastRPCA", host="git.yale.edu/api/v3", auth_token="3135ea8797c3ae6471fc96fc92cd382d0ab330f5") 
+
 source('fastRPCA.R') 
 
+require(fastRPCA)
 #####Small example
 k_ <- 20;
-m = 9E3;
-n = 10E2;
+m = 9E4;
+n = 10E3;
 B <- matrix(rexp(m*k_), m)
 C <- matrix(rexp(k_*n), k_)
 D <- B %*%C;
