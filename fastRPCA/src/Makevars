@@ -1,1 +1,2 @@
-PKG_LIBS = -L./../inst -lfastpca
+DEFAULT_PATH=`echo 'cat(.libPaths()[1])' | ${R_HOME}/bin/R --vanilla --slave`
+PKG_LIBS = -Wl,-rpath,$(DEFAULT_PATH)/fastRPCA/libs -lfastpca
