@@ -69,6 +69,7 @@ R_target: $(EXE_OBJ_FILES)
 #install_name_tool -change /usr/local/lib/gcc/5/libgcc_s.1.dylib  @rpath/libgcc_s.1.dylib ../fastRPCA/inst/libs/libfastpca.dylib
 #install_name_tool -change /usr/local/lib/gcc/5/libgcc_s.1.dylib  @rpath/libgcc_s.1.dylib ../fastRPCA/inst/libs/libfastpca.dylib
 
+#Need tor un this everytime you make the file
 #install_name_tool -id "@rpath/libfastpca.dylib" inst/libs/libfastpca.dylib
 
 
