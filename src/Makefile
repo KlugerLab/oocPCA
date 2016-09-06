@@ -1,19 +1,24 @@
-EXE_INCLUDEPATH = -I../include -I../include
-CFLAGS=-O3 -std=c++0x -m64 -DMKL_ILP64 -fopenmp -DDEBUG
+EXE_INCLUDEPATH = -I../include
+CFLAGS=-O3 -std=c++0x -m64 -DMKL_ILP64 -fopenmp -DDEBUG -DUSE_MKL
 
 
 platform=$(shell uname)
 ifeq ($(platform),Darwin)
 #mac
-LIBS =   -L../lib -lcustom_mkl
 CFLAGS += -DOSX
+EXE_INCLUDEPATH = -I../include  -I/opt/intel/compilers_and_libraries_2016.1.111/mac/mkl/include/ 
+CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.dylib"'
+LIBS =  -L../lib  -lfastpca_custommkl -L../lib -liomp5 -ldl -lpthread -lm -Wl,-rpath,/Users/george/Research_Local/FastPCA4/FastPCA/lib
 CC = g++-5
+R_TARGET = ../fastRPCA/inst/libs/libfastpca.dylib
 else
 
 #Linux
-LIBS =  -Wl,--no-as-needed  -L../lib -lfastpca_custommkl -liomp5 -ldl -lpthread -lm
 CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.so"'
+EXE_INCLUDEPATH = -I../include
+LIBS =  -Wl,--no-as-needed  -L../lib -lfastpca_custommkl -liomp5 -ldl -lpthread -lm
 CC = g++
+R_TARGET = ../fastRPCA/inst/libs/libfastpca.so
 
 endif
 
@@ -22,7 +27,6 @@ EXE_CPP_FILES := $(wildcard *.cpp)
 EXE_OBJ_FILES := $(addprefix ../build/,$(notdir $(EXE_CPP_FILES:.cpp=.o)))
 EXE_TARGET = ../build/fastpca.xx
 
-R_TARGET = ../fastRPCA/inst/libs/libfastpca.so
 
 all: EXE_target R_target
 
@@ -44,3 +48,22 @@ R_target: $(EXE_OBJ_FILES)
 #Build the CPP files into objects
 ../build/%.o: %.cpp
 	$(CC) $(CFLAGS) -fPIC -c -o $@ $< $(EXE_INCLUDEPATH) 
+#install_name_tool -change libiomp5.dylib /Users/george/Research_Local/FastPCA4/FastPCA/lib/libiomp5.dylib libfastpca_custommkl.dylib
+#install_name_tool -change libiomp5.dylib @rpath/libiomp5.dylib libfastpca_custommkl.dylib
+
+
+#install_name_tool -id "@rpath/libiomp5.dylib" ../lib/libiomp5.dylib
+#install_name_tool -id "@rpath/libfastpca_custommkl.dylib" libfastpca_custommkl.dylib
+#install_name_tool -add_rpath %s  fastrpca.so
+#otool -D libfastpca_custommkl.dylib 
+#Plan: Make all the names for libraries to be rpath, and then just add rpath to each of the libraries.
+
+
+
+#CHANGE_SCRIPT=`echo 'system(sprintf("install_name_tool -change libiomp5.dylib %s/libiomp5.dylib %s/libfastpca_custommkl.dylib",system.file("libs", package="fastRPCA"), system.file("libs", package="fastRPCA") ))' | R --vanilla --slave`
+#CHANGE_SCRIPT=`echo 'system(sprintf("install_name_tool -change /Users/george/Research_Local/FastPCA4/FastPCA/lib/libfastpca_custommkl.dylib  %s/libfastpca_custommkl.dylib %s/libfastpca.so",system.file("libs", package="fastRPCA"), system.file("libs", package="fastRPCA") ))' | R --vanilla --slave`
+#CHANGE_SCRIPT=`echo 'system(sprintf('install_name_tool -change /Users/george/Research_Local/FastPCA4/FastPCA/lib/libiomp5.dylib %s/libiomp5.dylib %s/libfastpca.so',system.file("libs", package="fastRPCA"), system.file("libs", package="fastRPCA") ))' | R --vanilla --slave`
+
+
+#This works:
+#CHANGE_SCRIPT=`echo 'system(sprintf("install_name_tool -add_rpath %s  %s/libfastpca.so",system.file("libs", package="fastRPCA"), system.file("libs", package="fastRPCA") ))' | R --vanilla --slave`
