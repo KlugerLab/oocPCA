@@ -9,7 +9,7 @@ CFLAGS += -DOSX
 EXE_INCLUDEPATH = -I../include  -I/opt/intel/compilers_and_libraries_2016.1.111/mac/mkl/include/ 
 CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.dylib"'
 LIBS =  -L../lib  -lfastpca_custommkl -L../lib -liomp5 -ldl -lpthread -lm -Wl,-rpath,/Users/george/Research_Local/FastPCA4/FastPCA/lib
-CC = g++-5
+CC = clang-omp++
 R_TARGET = ../fastRPCA/inst/libs/libfastpca.dylib
 else
 
@@ -64,6 +64,13 @@ R_target: $(EXE_OBJ_FILES)
 #CHANGE_SCRIPT=`echo 'system(sprintf("install_name_tool -change /Users/george/Research_Local/FastPCA4/FastPCA/lib/libfastpca_custommkl.dylib  %s/libfastpca_custommkl.dylib %s/libfastpca.so",system.file("libs", package="fastRPCA"), system.file("libs", package="fastRPCA") ))' | R --vanilla --slave`
 #CHANGE_SCRIPT=`echo 'system(sprintf('install_name_tool -change /Users/george/Research_Local/FastPCA4/FastPCA/lib/libiomp5.dylib %s/libiomp5.dylib %s/libfastpca.so',system.file("libs", package="fastRPCA"), system.file("libs", package="fastRPCA") ))' | R --vanilla --slave`
 
+#install_name_tool -change /usr/local/lib/gcc/5/libgcc_s.1.dylib  @rpath/libgcc_s.1.dylib ../fastRPCA/inst/libs/libfastpca.dylib
+#install_name_tool -change /usr/local/lib/gcc/5/libgcc_s.1.dylib  @rpath/libgcc_s.1.dylib ../fastRPCA/inst/libs/libfastpca.dylib
+
+#install_name_tool -id "@rpath/libfastpca.dylib" inst/libs/libfastpca.dylib
+
 
 #This works:
 #CHANGE_SCRIPT=`echo 'system(sprintf("install_name_tool -add_rpath %s  %s/libfastpca.so",system.file("libs", package="fastRPCA"), system.file("libs", package="fastRPCA") ))' | R --vanilla --slave`
+
+
