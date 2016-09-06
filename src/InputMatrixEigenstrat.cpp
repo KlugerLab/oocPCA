@@ -86,5 +86,6 @@ int InputMatrixEigenstrat::loadNextBlock() {
 		}
 	}
 	//printf("----------Loaded a block--------------\n");
-	InputMatrix::loadNextBlock();
+	return InputMatrix::loadNextBlock();
+
 }

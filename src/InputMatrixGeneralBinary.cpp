@@ -30,4 +30,5 @@ int InputMatrixGeneralBinary::loadNextBlock() {
 	}
 	inputFile->read((char *) this->block, sizeof(double)*this->blockSize*this->n);
 	InputMatrix::loadNextBlock();
+	return 1;
 }

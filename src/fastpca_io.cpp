@@ -145,6 +145,7 @@ int fastpca_read_bed_format(const char * filename, long long &m, long long &n, d
 	}
 
 
+	return 1;
 }
 int fastpca_impute_missing_average(double *& A, long long m, long long n, double missingValue) {
 	for (int i=0; i<m; i++ ){
@@ -171,6 +172,7 @@ int fastpca_impute_missing_average(double *& A, long long m, long long n, double
 		}
 
 	}
+	 return 1;
 }
 int fastpca_write_binary_format(const char * filename, long long m, long long n,double * A) {
 	std::ofstream outputFile( filename, std::ios::out | std::ios::binary | std::ios::trunc	);
@@ -183,6 +185,7 @@ int fastpca_write_binary_format(const char * filename, long long m, long long n,
 	outputFile.close();
 
 
+	return 1;
 }
 int fastpca_write_input_matrix_binary_format(const char * filename, InputMatrix * A) {
 
@@ -198,6 +201,7 @@ int fastpca_write_input_matrix_binary_format(const char * filename, InputMatrix 
 	outputFile.close();
 
 
+	 return 1;
 }
 int fastpca_write_eigenstrat_format(const char * filename, long long m, long long n,long long k,double *S, double *V) {
 	std::ofstream outputFile;	
@@ -222,6 +226,7 @@ int fastpca_write_eigenstrat_format(const char * filename, long long m, long lon
 	}
 
 
+	return 1;
 }
 int fastpca_save_bin( const char * basename, InputMatrix* A, double* U, double* S , double* V,long long k ) {
 		std::string baseFileName(basename);
@@ -234,4 +239,6 @@ int fastpca_save_bin( const char * basename, InputMatrix* A, double* U, double* 
 		fastpca_write_binary_format(UFileName.c_str(), A->m,k, U);
 		fastpca_write_binary_format(SFileName.c_str(), k,k, S);
 		fastpca_write_binary_format(VFileName.c_str(), k,A->n, V);
+		return 1;
 }
+

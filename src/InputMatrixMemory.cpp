@@ -37,6 +37,7 @@ int InputMatrixMemory::init() {
 	this->firstIt = true;
 	this->remainderIt = false;
 	fastpca_debug_print ("%s", "Init complete");
+	return 1;
 }
 int InputMatrixMemory::hasNext() {
 
@@ -51,4 +52,5 @@ int InputMatrixMemory::hasNext() {
 }
 
 int InputMatrixMemory::loadNextBlock() {
+	return 1;
 }

@@ -1,3 +1,5 @@
+#ifndef MACROS_H 
+#define MACROS_H
 /*
 #ifdef PCA_DATATYPE_SINGLE
 #define PCA_DATATYPE float
@@ -30,8 +32,8 @@
 #else
 #define MKL_CUSTOM_LIBRARY "/usr/lib/libblas.so"
 #endif
-*/
 #pragma message "Library is " MKL_CUSTOM_LIBRARY
+*/
 
 #ifdef DEBUG
 #define DEBUG_TEST 1
@@ -41,3 +43,5 @@
 #define fastpca_debug_print(fmt, ...) \
 	do { if (DEBUG_TEST) fprintf(stderr, "%s:%d: " fmt, __FILE__, \
                                 __LINE__, __VA_ARGS__);} while (0)
+
+#endif

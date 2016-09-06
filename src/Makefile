@@ -7,8 +7,10 @@ ifeq ($(platform),Darwin)
 #mac
 CFLAGS += -DOSX
 EXE_INCLUDEPATH = -I../include  -I/opt/intel/compilers_and_libraries_2016.1.111/mac/mkl/include/ 
+#CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.dylib"'
 CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.dylib"'
-LIBS =  -L../lib  -lfastpca_custommkl -L../lib -liomp5 -ldl -lpthread -lm -Wl,-rpath,/Users/george/Research_Local/FastPCA4/FastPCA/lib
+#LIBS =  -L../lib  -lfastpca_custommkl -L../lib -liomp5 -ldl -lpthread -lm -Wl,-rpath,/Users/george/Research_Local/FastPCA4/FastPCA/lib
+LIBS =  -L../lib  -lfastpca_custommkl -L../lib -liomp5 -ldl -lpthread -lm -Wl,-rpath,/Users/george/Research_Local/FastPCA4/FastPCA/lib  -DMKL_ILP64 -m64
 CC = clang-omp++
 R_TARGET = ../fastRPCA/inst/libs/libfastpca.dylib
 else

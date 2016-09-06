@@ -1,2 +1,3 @@
 DEFAULT_PATH=`echo 'cat(system.file("libs", package="fastRPCA"))' | ${R_HOME}/bin/R --vanilla --slave`
+CXX=clang-omp++
 PKG_LIBS = -L../inst/libs/ -Wl,-rpath,$(DEFAULT_PATH) -lfastpca

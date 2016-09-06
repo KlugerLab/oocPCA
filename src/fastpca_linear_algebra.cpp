@@ -24,7 +24,8 @@ int fastpca_gemm(CBLAS_ORDER layout, CBLAS_TRANSPOSE transposeA,
 	void 	*hndl;
 	//hndl = dlopen("libcustom_mkl.so", RTLD_LOCAL | RTLD_LAZY);
 	//hndl = dlopen("/lib/libcustom_mkldist.so", RTLD_LOCAL | RTLD_LAZY);
-	hndl = dlopen(MKL_CUSTOM_LIBRARY, RTLD_LOCAL | RTLD_LAZY);
+	hndl = dlopen("libfastpca_custommkl.dylib", RTLD_LOCAL | RTLD_LAZY);
+	//hndl = dlopen(MKL_CUSTOM_LIBRARY, RTLD_LOCAL | RTLD_LAZY);
 	if (!hndl) {
 		fprintf(stderr, "%s\n", dlerror());
 		exit(EXIT_FAILURE);
@@ -89,6 +90,7 @@ int fastpca_mean_center_rows(long long m, long long n,double * A) {
 			A[i*n+j] -= rowsums[i];
 		}
 	}
+	return 1;
 }
 int fastpca_mean_center_columns(long long m, long long n,double * A) {
 
@@ -119,6 +121,7 @@ int fastpca_mean_center_columns(long long m, long long n,double * A) {
 			A[i*n+j] -= colsums[j];
 		}
 	}
+	return 1;
 }
 
 int fastpca_lu_l(long long m, long long n, double * A) {

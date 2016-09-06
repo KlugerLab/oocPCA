@@ -160,5 +160,6 @@ int InputMatrixBedInCore::loadNextBlock() {
 	byteCount++;
 	}
 	//printf("Successfully loaded a block\n");
-	InputMatrix::loadNextBlock();
+	return InputMatrix::loadNextBlock();
+
 }
