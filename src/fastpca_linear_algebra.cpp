@@ -24,7 +24,7 @@ int fastpca_gemm(CBLAS_ORDER layout, CBLAS_TRANSPOSE transposeA,
 	void 	*hndl;
 	//hndl = dlopen("libcustom_mkl.so", RTLD_LOCAL | RTLD_LAZY);
 	//hndl = dlopen("/lib/libcustom_mkldist.so", RTLD_LOCAL | RTLD_LAZY);
-	hndl = dlopen("./libfastpca_custommkl.dylib", RTLD_LOCAL | RTLD_LAZY);
+	hndl = dlopen("libfastpca_custommkl.dylib", RTLD_LOCAL | RTLD_LAZY);
 	//hndl = dlopen(MKL_CUSTOM_LIBRARY, RTLD_LOCAL | RTLD_LAZY);
 	if (!hndl) {
 		fprintf(stderr, "%s\n", dlerror());
