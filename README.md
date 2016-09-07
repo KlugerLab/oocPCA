@@ -1,23 +1,36 @@
 # FastPCA
+FastPCA is a C++ implementation of randomized SVD. Two interfaces are
+available, via an R wrapper called fastRPCA and by commandline.   OS X and
+Linux users can install the pre-compiled binaries, following the processes
+outlined below:
 
-##Installation
+##R Package Installation
+1. Install devtools: `install.packages('devtools')`
+2. Install fastRPCA: `install_github("KlugerLab/FastPCA",subdir="fastRPCA",
+   host="git.yale.edu/api/v3", auth_token="<>")`
+
+OR:
+1.  Clone this git repository
+2. `cd fastRPCA`
+3. `R CMD INSTALL .`
+
+##FastPCA using bash
+
+##Compiling from source
 ###OSX
 ####Prerequisities:
-* Cmake: Open source tool for building software cross-platforms (Download here: https://cmake.org/download/)
-* Intel Math Kernel Library: Highly optimized implementations of BLAS and LAPACK (Free download here: https://software.intel.com/sites/campaigns/nest/)
+* Intel Math Kernel Library: Highly optimized implementations of BLAS and LAPACK (Free download [here](https://software.intel.com/sites/campaigns/nest/) ).  The `lib` folder contains a [custom built shared library](https://software.intel.com/en-us/node/528690), but the headers cannot be distributed.  As such, to compile from source, Intel MKL must be installed on your machine.
 
-####Installation process
-1. Open Cmake, and set the "Source Directory" to be the root folder of the project, and the the build directory to be a directory of your choosing (you can just let it be a folder called "build" in the FastPCA folder).
-2. Click "Configure," and Cmake will find the location of your Intel MKL libraries and include files.  If it does not find them, you can specify them yourself
-3. Click "Generate," which will generate a Makefile
-4. Use a terminal to cd into the build folder, and run the command "make" which will build the software in that folder.
-5. Export the DYLD_LIBRARY_PATH so that the new executable can find the necessary dynamic libraries.  The folder containing libmkl_rt.dylib and the folder containing libiomp5.dylib must be in the path.  For example, : export DYLD_LIBRARY_PATH="/opt/intel/compilers_and_libraries_2016.1.111/mac/compiler/lib/:/opt/intel/mkl/lib"
+####How to compile from source
+1. Use a terminal to cd into the src folder, and run the command `make` which will build the software in that folder.
+2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
+   necessary dynamic libraries in the `lib` folder.  ` export
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`. 
 
 ####Note
 The code base uses the LAPACKE interface for LAPACK as opposed to the f2c
 generated LAPACK functions.  The OS X Accelerate Framework does not include the
-former, and hence, we require users to install Intel MKL to use FastPCA on
-their Macs.  
+former, and hence, we use Intel MKL in lieu of OS X Accelerate Framework. 
 
 ##TODO
 * Transition from LAPACKE to the CLAPACK f2c'd functions, allowing linkage with OS X Accelerate Framework
