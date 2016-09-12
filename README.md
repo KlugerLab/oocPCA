@@ -10,11 +10,17 @@ outlined below:
    host="git.yale.edu/api/v3", auth_token="<>")`
 
 OR:
+
 1.  Clone this git repository
 2. `cd fastRPCA`
 3. `R CMD INSTALL .`
 
-##FastPCA using bash
+##Installing Command-line Implementation
+1. Clone this git repository
+2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
+   necessary dynamic libraries in the `lib` folder.  ` export
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`. 
+
 
 ##Compiling from source
 ###OSX
