@@ -30,8 +30,8 @@ LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`.
 ####How to compile from source
 1. Use a terminal to cd into the src folder, and run the command `make` which will build the software in that folder.
 2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
-   necessary dynamic libraries in the `lib` folder.  ` export
-LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`. 
+   necessary dynamic libraries in the `lib` folder. For example:
+  ` export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`. 
 
 ####Note
 The code base uses the LAPACKE interface for LAPACK as opposed to the f2c

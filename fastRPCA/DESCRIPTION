@@ -7,5 +7,7 @@ Author: Your Name
 Maintainer: Your Name <your@email.com>
 Description: More about what it does (maybe more than one line)
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.4)
+Imports:
+    Rcpp (>= 0.12.4)
 LinkingTo: Rcpp
+RoxygenNote: 5.0.1

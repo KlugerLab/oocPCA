@@ -6,7 +6,7 @@ source('fastRPCA.R')
 require(fastRPCA)
 #####Small example
 k_ <- 20;
-m = 9E4;
+m = 9E2;
 n = 10E3;
 B <- matrix(rexp(m*k_), m)
 C <- matrix(rexp(k_*n), k_)
