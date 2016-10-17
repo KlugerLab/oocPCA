@@ -58,7 +58,31 @@ fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=0,centeringRow=0, center
 	return (result)
 
 }
-#
+#' Perform fast SVD for a matrix in CSV format
+#'
+#' This function performs a nearly optimal rank-k approximation to the singular value decomposition inputMatrix = USV' on a matrix that is passed via CSV format.  Please see references for explanation of 'nearly optimal.'
+#'
+#' @param inputFile csv containing matrix to decompose
+#' @param k Rank of decomposition. Default: 5
+#' @param l Block size. Default k+2
+#' @param its Number of normalized power iterations. Default: 2
+#' @param diffsnorm Calculate 2-norm accuracy, i.e. ||A-USV||_2. 
+#' @param centeringRow Center the rows prior to decomposition.
+#' @param centeringRow Center the columns prior to decomposition.
+#' @return A FastPCA object, containing the decomposition.
+#' @examples
+#' 
+#' k_ <- 20;
+#' m = 9E2;
+#' n = 10E3;
+#' B <- matrix(rexp(m*k_), m)
+#' C <- matrix(rexp(k_*n), k_)
+#' D <- B %*%C;
+#' dim(D)
+#' fn = "test_csv.csv"
+#' write.csv(D,file=fn)
+#' fastDecomp <- fastPCA_CSV(fn, k=k_, mem=n*8*5, diffsnorm=TRUE)
+#' @export
 fastPCA_CSV <- function (inputFile,k=5, mem=144, l=5, its=2,diffsnorm=0,centeringRow=0, centeringColumn = 0) {
 	result = .Call( 'fastRPCA','csv', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm);
 	return (fastPCA_base(result, k));
