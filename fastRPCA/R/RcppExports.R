@@ -83,8 +83,19 @@ fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=0,centeringRow=0, center
 #' write.csv(D,file=fn)
 #' fastDecomp <- fastPCA_CSV(fn, k=k_, mem=n*8*5, diffsnorm=TRUE)
 #' @export
-fastPCA_CSV <- function (inputFile,k=5, mem=144, l=5, its=2,diffsnorm=0,centeringRow=0, centeringColumn = 0) {
-	result = .Call( 'fastRPCA','csv', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm);
+fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=0,centeringRow=0, centeringColumn = 0) {
+	if (missing(l)){
+		l = k+2;
+	}
+	
+	print("About tocall fastRPCA")
+	result = .Call( 'fastRPCA', 'csv', inputFile, m, n, k,l,its, mem,centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
+	m = result$dims[1]
+	n = result$dims[2]
+	#LEft off ehre....just gotta get this m and n thing right
+	result$U<- matrix(result$U, nrow = m, ncol = k)
+	result$V <- matrix(result$V, nrow = n, ncol = k)
+	result$S <- matrix(result$S, ncol = k, nrow = k)
 	return (fastPCA_base(result, k));
 
 }

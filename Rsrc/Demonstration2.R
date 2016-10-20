@@ -19,6 +19,20 @@ norm(D - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
 slowDecomp <- svd(D)
 norm(D - slowDecomp$u %*% diag(slowDecomp$d) %*%t(slowDecomp$v), type='2')
 
+
+#####Small example csv
+require(fastRPCA)
+k_ <- 20;
+m = 90E3;
+n = 90E1;
+B <- matrix(rexp(m*k_), m)
+C <- matrix(rexp(k_*n), k_)
+D <- B %*%C;
+fn = "/Users/george/Research_Local/FastPCA4/FastPCA/fastRPCA/test_csv.csv"
+write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
+fastDecomp <- fastPCA_CSV(fn, k=k_, mem=(10E6 + m* n*8), diffsnorm=TRUE)
+norm(D - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
+
 ####Big example: in core R
 B <- matrix(rexp(1E4*20), 1E4)
 C <- matrix(rexp(20*2E5), 20)
