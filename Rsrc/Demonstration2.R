@@ -23,7 +23,7 @@ norm(D - slowDecomp$u %*% diag(slowDecomp$d) %*%t(slowDecomp$v), type='2')
 #####Small example csv
 require(fastRPCA)
 k_ <- 20;
-m = 90E3;
+m = 90E1;
 n = 90E1;
 B <- matrix(rexp(m*k_), m)
 C <- matrix(rexp(k_*n), k_)
