@@ -17,8 +17,8 @@ else
 
 #Linux
 CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.so"'
-EXE_INCLUDEPATH = -I../include
-LIBS =  -Wl,--no-as-needed  -L../lib -lfastpca_custommkl -liomp5 -ldl -lpthread -lm
+EXE_INCLUDEPATH = -I../include -I/opt/intel/composer_xe_2015.1.133/mkl/include/
+LIBS =  -Wl,--no-as-needed  -L../lib -lfastpca_custommkl -liomp5 -ldl -lpthread -lm -Wl,-rpath,/data/Linderman/FastPCA5/FastPCA/lib
 CC = g++
 R_TARGET = ../fastRPCA/inst/libs/libfastpca.so
 
