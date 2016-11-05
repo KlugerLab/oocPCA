@@ -13,7 +13,7 @@ InputMatrix::InputMatrix(std::string p, long long maxMemoryBytes)
 	imputeMissing = false;
 }
 int InputMatrix::loadNextBlock () {
-	fastpca_debug_print("%s", "Preprocess new block\n");
+	//fastpca_debug_print("%s", "Preprocess new block\n");
 	preprocessBlock();
 	return 1;
 }
@@ -40,7 +40,7 @@ int InputMatrix::init () {
 	this->calculatedRemainderBlockSize	 = m % this->calculatedBlockSize;
 	this->blockSize   = this->calculatedBlockSize;
 
-	fastpca_debug_print("m:%lld, n:%lld, blockSize:%d,  totalMem: %lld, blockNum:%d, %d,  remainder: %d\n", m,n, blockSize, totalMem, blockNum, this->calculatedBlockSize, this->calculatedRemainderBlockSize);
+	fastpca_debug_print("m:%lld, n:%lld, blockSize:%d,  totalMem: %lld, blockNum:%d, calculated block size %lld,  remainder: %lld\n", m,n, blockSize, totalMem, blockNum, this->calculatedBlockSize, this->calculatedRemainderBlockSize);
 	long long blockSizeBytes = (long long) this->calculatedBlockSize*(long long) this->n* (long long) sizeof( double );
 	//this->block    = (double *)mkl_malloc( (long long) this->calculatedBlockSize*this->n*sizeof( double ), 64 );
 	//fastpca_debug_print("Would you like to proceed in allocating %le bytes? \n<enter> to continue, ctrl+c to cancel.\n", (double)blockSizeBytes);
@@ -110,7 +110,7 @@ int InputMatrix::preprocessBlock() {
 	if (!this->imputeMissing && !this->centerRows && !this->centerColumnsFlag){
 		return 1;
 	}
-	fastpca_debug_print("%s", "Begin preprocessing\n");
+	//fastpca_debug_print("%s", "Begin preprocessing\n");
 
 	//double * rowsums = (double *)mkl_malloc( this->blockSize*sizeof( double ), 64 );
 	int countOfNonMissing = 0;
@@ -156,7 +156,7 @@ int InputMatrix::preprocessBlock() {
 		}
 
 	}
-	fastpca_debug_print("%s", "End preprocessing\n");
+	//fastpca_debug_print("%s", "End preprocessing\n");
 
 	 return 1;
 }

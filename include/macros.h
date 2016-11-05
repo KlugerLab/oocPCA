@@ -41,7 +41,7 @@
 #define DEBUG_TEST 0
 #endif
 #define fastpca_debug_print(fmt, ...) \
-	do { if (DEBUG_TEST) fprintf(stderr, "%s:%d: " fmt, __FILE__, \
+	do { if (DEBUG_TEST) fprintf(stdout, "%s:%d: " fmt, __FILE__, \
                                 __LINE__, __VA_ARGS__);} while (0)
 
 #endif

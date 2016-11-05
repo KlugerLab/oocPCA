@@ -23,7 +23,7 @@ InputMatrixMemory::InputMatrixMemory( double * A, long long maxMemoryBytes, int 
 	this->block = A;
 	this->m = m;
 	this->n = n;
-	fastpca_debug_print ("m %lld n %lld", this->m,this->n);
+	//fastpca_debug_print ("m %lld n %lld", this->m,this->n);
 
 }
 

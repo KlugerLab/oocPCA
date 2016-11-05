@@ -11,8 +11,7 @@
 #include "InputMatrixEigenInCore.h"
 #include "InputMatrixCSV.h"
 
-int fastPCAFile (int inputFormat, const char *inputFileName, double **U, double **S, double **V, long long m, long long n, long long k, long long l, long long its, long long memory, int centering_row, int centering_column, int dits, int diffsnorm, double& snorm) {
-		printf("What the hell is this man\n");
+int fastPCAFile (int inputFormat, const char *inputFileName, double **U, double **S, double **V, long long &m, long long &n, long long k, long long l, long long its,long long memory, int centering_row, int centering_column, int dits, int diffsnorm, double& snorm) {
 		fastpca_debug_print("Input type is file path: %s", inputFileName);
 //fastpca_debug_print("%s", "Input type is file path: ");
 		//std::cout <<"Reading file "<< inputFileName << std::endl;
@@ -40,12 +39,12 @@ int fastPCAFile (int inputFormat, const char *inputFileName, double **U, double 
 			//fastpca_debug_print("%s", "error");
 			//fastpca_debug_print("%s", inputFormat.c_str());
 			//::Rf_error(error);
+			return(-105);
 		}
 
 
-	fastpca_debug_print("%s","realloced\n");
 
-	fastpca_debug_print("Maximum memory set to be %e\n", (double)memory);
+		fastpca_debug_print("Maximum memory set to be %e\n", (double)memory);
 	//Make sure memory is checked
 	if (centering_row == 1) {
 		inputMatrix->centerRowsOn();	
@@ -71,6 +70,8 @@ int fastPCAFile (int inputFormat, const char *inputFileName, double **U, double 
 		}
 	}
 	fastpca_debug_print("%s", "\n\nBegin PCA...\n");
+	m = (long long) inputMatrix->m;
+	n = (long long) inputMatrix->n;
 	fastpca_debug_print("Running PCA with k=%lld, m=%e, n=%e, l=%lld, its=%lld\n", k,(double)inputMatrix->m,(double)inputMatrix->n,l,its);
 	//high_resolution_clock::time_point t_pca = high_resolution_clock::now();
 	*U = (double *)fastpca_aligned_alloc( 64, (long long) inputMatrix->m*k*sizeof( double ) );
@@ -109,9 +110,9 @@ return 1;
 
 }
 
- int fastPCAMemory ( double * A, double **U, double **S, double **V, long long m, long long n, long long k, long long l, long long its, long long memory, int centering_row, int centering_column, int dits, int diffsnorm, double& snorm) {
+ int fastPCAMemory ( double * A, double **U, double **S, double **V, long long m, long long n, long long k, long long l, long long its,  int centering_row, int centering_column, int dits, int diffsnorm, double& snorm) {
 
-	fastpca_debug_print("%s","We are in\n");
+	 
 	InputMatrix * inputMatrix;
 
 	double * inputMatrixRaw = (double *)fastpca_aligned_alloc( 64, (long long) m*n*sizeof( double ) );
@@ -122,10 +123,11 @@ return 1;
 		}
 	}
 	std::string p ("na");
-	fastpca_debug_print("%s","realloced\n");
 
-	fastpca_debug_print("Maximum memory set to be %e\n", (double)memory);
-	//Make sure memory is checked
+	//You have to pass this so that all the InputMatrix objects are
+	//consistent. Obviously, we aren't doing any blocking on the matrices
+	//that are passed by memory
+	long long memory = m*n*8;
 	inputMatrix = new InputMatrixMemory(inputMatrixRaw, memory,m,n,p );
 	if (centering_row == 1) {
 		inputMatrix->centerRowsOn();	
@@ -133,16 +135,14 @@ return 1;
 
 
 	int info = inputMatrix->init();
-	fastpca_debug_print("%s"," Inited it");
 	if (centering_column == 1) {
 		inputMatrix->centerColumns();	
 	}
 	if (info < 0 ) {
-	//TODO: Add error
 		char error [100];
 		sprintf(error,"An unknown error has occured in inputMatrix->init(): %d", info); 
+		std::cerr <<  error << std::endl;
 		return -100;
-//		::Rf_error(error);
 	}
 
 	for (int test = 0; test <0; test ++ ){
@@ -151,7 +151,7 @@ return 1;
 			fastpca_print_matrix("Test", inputMatrix->blockSize,inputMatrix->n,inputMatrix->block);
 		}
 	}
-	fastpca_debug_print("%s", "\n\nBegin PCA...\n");
+	fastpca_debug_print("%s", "Begin PCA...\n");
 	fastpca_debug_print("Running PCA with k=%lld, m=%e, n=%e, l=%lld, its=%lld\n", k,(double)inputMatrix->m,(double)inputMatrix->n,l,its);
 	//high_resolution_clock::time_point t_pca = high_resolution_clock::now();
 	*U = (double *)fastpca_aligned_alloc( 64, (long long) inputMatrix->m*k*sizeof( double ) );
@@ -160,22 +160,21 @@ return 1;
 
 	info = fastpca_pca(k,l, inputMatrix, *U,*S,*V,its);
 	if (info <0 ) {
-	//TODO: error here
 		char error [100];
 		sprintf(error,"An unknown error has occured in fastpca_pca: %d", info); 
+		std::cerr <<  error << std::endl;
 		return -101;
-		//#::Rf_error(error);
 	}
 	//duration<double> time_span_pca = duration_cast<duration<double>>(high_resolution_clock::now() - t_pca);
 	//fastpca_debug_print("The PCA function took %lf seconds\n", time_span_pca.count());
 	if (diffsnorm == 1) {
-		fastpca_debug_print("%s", "\n\nBegin diffsnorm...\n");
+		fastpca_debug_print("%s", "Begin diffsnorm...\n\n");
 		info = fastpca_diffsnorm(inputMatrix, *U, *S,*V,k,dits, snorm);
 		if (info <0 ) {
 			char error [100];
 			sprintf(error,"An unknown error has occured in diffsnorm: %d", info); 
+			std::cerr <<  error << std::endl;
 			return -102;
-			//::Rf_error(error);
 		}
 		fastpca_debug_print("The norm is %le\n", snorm);
 		fastpca_debug_print("%s", "End diffsnorm\n\n");

@@ -7,7 +7,6 @@
 #' @param result Value of one of the other functions.
 #' @param k  Rank of the transformation.
 #' @return A FastPCA object, containing the decomposition.
-#' @examples
 fastPCA_base <- function(result, k) { result$U <- t(matrix(result$U, ncol = result$dim[1], nrow = k))
 	result$V <- t(matrix(result$V, ncol = result$dim[2], nrow = k))
 	result$S <- matrix(result$S, ncol = k, nrow = k)
@@ -39,18 +38,44 @@ fastPCA_base <- function(result, k) { result$U <- t(matrix(result$U, ncol = resu
 #' str(fastDecomp)
 #' norm(D - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
 #' @export
-fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=0,centeringRow=0, centeringColumn = 0) {
+fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
+
 	if (missing(l)){
 		l = k+2;
+	}
+	if (!"matrix" == class(inputMatrix)) {
+		stop("inputMatrix needs to be a matrix");
+	}
+	m <- nrow(inputMatrix); n <- ncol(inputMatrix);
+	if (k <=0 || l<=0  ||  its <=0 ){
+		stop("k,l,mem, its all must be positive numbers");
+	}		
+
+	if (k>l ){
+		stop("k must be less than or equal to l");
+	}
+
+	if (l> min(m,n) ){
+		stop("l should not exceed the smallest dimension of the matrix");
+	}
+
+	if (k > min(m,n) ){
+		stop("k must be less than or equal to the smallest dimension of the matrix");
+	}		
+	if (!identical(TRUE,diffsnorm)  && !identical(FALSE, diffsnorm)) {
+		    stop("diffsnorm must be TRUE or FALSE");
+	}
+	if (!identical(TRUE,centeringRow)  && !identical(FALSE, centeringRow)) {
+		    stop("centeringRow must be TRUE or FALSE");
+	}
+	if (!identical(TRUE,centeringColumn)  && !identical(FALSE, centeringColumn)) {
+		    stop("centeringColumn must be TRUE or FALSE");
 	}
 	#Swapping n and m becaue it is column major.  So, the U will be the V and vice versa.
 	n = nrow(inputMatrix);
 	m = ncol(inputMatrix);
 	
-	mem= m*n*8;
-
-	print("About to call");
-	result = .Call( 'fastRPCA', 'memory', as.matrix(inputMatrix), m, n, k,l,its, mem,centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
+	result = .Call( 'fastRPCA', 'memory', as.matrix(inputMatrix), m, n, k,l,its, -1, centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
 	V<- t(matrix(result$U, ncol = m, nrow = k))
 	result$U <- t(matrix(result$V, ncol = n, nrow = k))
 	result$V <-  V;
@@ -74,25 +99,43 @@ fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=0,centeringRow=0, center
 #' 
 #' k_ <- 20;
 #' m = 9E2;
-#' n = 10E3;
+#' n = 10E2;
 #' B <- matrix(rexp(m*k_), m)
 #' C <- matrix(rexp(k_*n), k_)
 #' D <- B %*%C;
 #' dim(D)
 #' fn = "test_csv.csv"
-#' write.csv(D,file=fn)
+#' write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
 #' fastDecomp <- fastPCA_CSV(fn, k=k_, mem=n*8*5, diffsnorm=TRUE)
 #' @export
-fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=0,centeringRow=0, centeringColumn = 0) {
+fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
+	print("okay wahts toing on");
+	if (!file.exists(inputFile)) {
+		stop("File does not exist");
+	}
 	if (missing(l)){
 		l = k+2;
 	}
 	
-	print("About tocall fastRPCA")
-	result = .Call( 'fastRPCA', 'csv', inputFile, m, n, k,l,its, mem,centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
+	if (k <=0 || l<=0  || mem <=0  ||  its <=0 ){
+		stop("k,l,mem, its all must be positive numbers");
+	}		
+
+	if (!identical(TRUE,diffsnorm)  && !identical(FALSE, diffsnorm)) {
+		    stop("diffsnorm must be TRUE or FALSE");
+	}
+	if (!identical(TRUE,centeringRow)  && !identical(FALSE, centeringRow)) {
+		    stop("centeringRow must be TRUE or FALSE");
+	}
+	if (!identical(TRUE,centeringColumn)  && !identical(FALSE, centeringColumn)) {
+		    stop("centeringColumn must be TRUE or FALSE");
+	}
+
+	print("okay wahts toing on2");
+	result = .Call( 'fastRPCA', 'csv', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
 	m = result$dims[1]
 	n = result$dims[2]
-	#LEft off ehre....just gotta get this m and n thing right
+
 	result$U<- matrix(result$U, nrow = m, ncol = k)
 	result$V <- matrix(result$V, nrow = n, ncol = k)
 	result$S <- matrix(result$S, ncol = k, nrow = k)

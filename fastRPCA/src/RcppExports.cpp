@@ -47,17 +47,8 @@ RcppExport SEXP fastRPCA(SEXP inputFile_temp,SEXP m, SEXP n, SEXP k_temp, SEXP l
 
 using namespace Rcpp;
 RcppExport SEXP fastRPCA(SEXP inputFormat_temp, SEXP inputMatrix_temp,SEXP m_temp, SEXP n_temp, SEXP k_temp, SEXP l_temp, SEXP its_temp, SEXP memory_temp,SEXP centering_row_temp, SEXP centering_column_temp, SEXP diffsnorm_temp){
-	printf("We have starrted!!");
-
-   	/***********************************************************
-   	 *  Declare variables for the input parameters. (Not all must be
-   	 *  passed.  For example, m and n are calculated from the input
-   	 *  matrix.
-   	 */
 
 	std::string inputFormat = Rcpp::as<std::string>(inputFormat_temp);
-	printf("got past");
-	printf("%s", inputFormat.c_str());
 
 	//Rank of the decomposition
 	long int k = Rcpp::as<long int>(k_temp);
@@ -87,7 +78,6 @@ RcppExport SEXP fastRPCA(SEXP inputFormat_temp, SEXP inputMatrix_temp,SEXP m_tem
 	//Number of power iterations to conduct for the diffsnorm
 	int dits;
 	dits = 20;
-	std::string p ("%s", "na");
 	std::vector<double> U_out;
 	std::vector<double> S_out;
 	std::vector<double> V_out;
@@ -96,33 +86,48 @@ RcppExport SEXP fastRPCA(SEXP inputFormat_temp, SEXP inputMatrix_temp,SEXP m_tem
 	double * V;
 	double *S;
 	double snorm;
-	double fake_norm;
+	long long m_,n_;
 
+	using namespace Rcpp;
+	int returnCode;
 	if (inputFormat == "memory"){
-		printf("Memory Format\n");
 		Rcpp::NumericVector X(inputMatrix_temp);
 		double * inputMatrixRaw = X.begin();
-		fastPCAMemory(inputMatrixRaw, &U, &S, &V, m,n,k, l, its,memory, centering_row, centering_column, dits, diffsnorm, snorm);
+		returnCode = fastPCAMemory(inputMatrixRaw, &U, &S, &V, m,n,k, l, its, centering_row, centering_column, dits, diffsnorm, snorm);
+		m_ = m;
+		n_ = n;
 
 	}else {
 		std::string inputMatrixPath= Rcpp::as<std::string>(inputMatrix_temp);
-		printf("%s\n\n", inputMatrixPath.c_str());
-		fastPCAFile(1, inputMatrixPath.c_str(), &U, &S, &V, m,n,k, l, its,memory, centering_row, centering_column, dits, diffsnorm, snorm);
+		returnCode=fastPCAFile(1, inputMatrixPath.c_str(), &U, &S, &V, m_,n_,k, l, its,memory, centering_row, centering_column, dits, diffsnorm, snorm);
 
 	}
 
-	printf("Finishing the to run!!\n");
+	switch (returnCode){
+		case -100:
+			::Rf_error("An unknown error has occurred in inputMatrix->init()");
+		break;
+		case -101:
+			::Rf_error("An unknown error has occurred in fastpca_pca()");
+		break;
+		case -102:
+			::Rf_error("An unknown error has occurred in diffsnorm()");
+		break;
+				
+	}
+
+
 	std::map<std::string,std::vector<double> > outs;
 
-	dimensions.push_back((double)m);
-	dimensions.push_back((double)n);
-	for (int p=0; p<k*m; p++){
+	dimensions.push_back((double)m_);
+	dimensions.push_back((double)n_);
+	for (int p=0; p<k*m_; p++){
 		U_out.push_back(U[p]);
 	}
 	for (int p=0; p<k*k; p++){
 		S_out.push_back(S[p]);
 	}
-	for (int p=0; p<k*n; p++){
+	for (int p=0; p<k*n_; p++){
 		V_out.push_back(V[p]);
 	}
 	
