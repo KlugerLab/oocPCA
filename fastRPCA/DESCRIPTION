@@ -9,5 +9,7 @@ Description: fastRPCA computes a randomized SVD of the data
 License: GPL (>= 2)
 Imports:
     Rcpp (>= 0.12.4)
+Suggests:
+    testthat
 LinkingTo: Rcpp
 RoxygenNote: 5.0.1
