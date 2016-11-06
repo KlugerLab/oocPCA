@@ -18,12 +18,24 @@ OR:
 2. `cd fastRPCA`
 3. `R CMD INSTALL .`
 
+Please see the documentation for usage: `?fastPCA ?fastPCA_CSV  ?fastPCA_BED `
+
 ###R Testing Suite
-Test cases for this software use testthat:
+Test cases for this software use the popular testing package `testthat`:
+
 1. `install.packages('testthat')`
 2. `testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="fastRPCA")))`
 
-#Features
+
+
+
+##Installing Command-line Implementation
+1. Clone this git repository
+2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
+   necessary dynamic libraries in the `lib` folder.  ` export
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`. 
+
+##Features
 * Variety of input formats and use cases
   * From memory in R
   * CSV format
@@ -36,20 +48,13 @@ Test cases for this software use testthat:
 * Imputation by averaging of missing data for GWAS
 
 
-
-##Installing Command-line Implementation
-1. Clone this git repository
-2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
-   necessary dynamic libraries in the `lib` folder.  ` export
-LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`. 
-
-
-##Compiling from source
-###OSX
-####Prerequisities:
+##Development
+###Compiling from source
+####OSX
+#####Prerequisities:
 * Intel Math Kernel Library: Highly optimized implementations of BLAS and LAPACK (Free download [here](https://software.intel.com/sites/campaigns/nest/) ).  The `lib` folder contains a [custom built shared library](https://software.intel.com/en-us/node/528690), but the headers cannot be distributed.  As such, to compile from source, Intel MKL must be installed on your machine.
 
-####How to compile from source
+#####How to compile from source
 1. Use a terminal to cd into the src folder, and run the command `make` which will build the software in that folder.
 2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
    necessary dynamic libraries in the `lib` folder. For example:
