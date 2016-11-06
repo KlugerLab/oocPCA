@@ -1,8 +1,11 @@
 # FastPCA
-FastPCA is a C++ implementation of randomized SVD. Two interfaces are
-available, via an R wrapper called fastRPCA and by commandline.   OS X and
-Linux users can install the pre-compiled binaries, following the processes
-outlined below:
+FastPCA is a Intel MKL-based, out-of-core C++ implementation of randomized
+SVD for rank-k approximation of matrices that are 1) too large to fit into
+memory and/or 2) would take too long to compute using traditional methods.
+
+Two interfaces are available, via an R wrapper called fastRPCA and by
+commandline.   OS X and Linux users can install the pre-compiled binaries,
+following the processes outlined below:
 
 ##R Package Installation
 1. Install devtools: `install.packages('devtools')`
@@ -15,11 +18,24 @@ OR:
 2. `cd fastRPCA`
 3. `R CMD INSTALL .`
 
+###R Testing Suite
+Test cases for this software use testthat:
+1. `install.packages('testthat')`
+2. `testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="fastRPCA")))`
+
+#Features
+* Variety of input formats and use cases
+  * From memory in R
+  * CSV format
+  * plink's binary [BED format] (http://pngu.mgh.harvard.edu/~purcell/plink/binary.shtml) for GWAS data. 
+* All matrix algebra is done with Intel MKL (pre-compiled version already linked) making it extremely fast
+* The calculations are 'blocked' allowing it to be 'out-of-core' when necessary, so that the user to specify the maximum amount of memory to be used.
+  * CSV files: when too large for the memory, read block by block from the hard drive
+  * BED files: when too large for the memory, stored in a compressed 2 bit-per-SNP format, and then decompressed block by block for calculations
+* Row-centering and column-centering
+* Imputation by averaging of missing data for GWAS
 
 
-###R Testing
-Run the testing suite using the following command: `devtools::test('fastRPCA')`
-or `testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="fastRPCA")))`
 
 ##Installing Command-line Implementation
 1. Clone this git repository
