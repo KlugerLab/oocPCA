@@ -8,7 +8,7 @@ Maintainer: George Linderman  <george.linderman@yale.edu>
 Description: fastRPCA computes a randomized SVD of the data.
 License: GPL (>= 2)
 Imports:
-    Rcpp (>= 0.12.4)
+    Rcpp (>= 0.11.6)
 Suggests:
     testthat
 LinkingTo: Rcpp
