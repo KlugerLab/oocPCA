@@ -1,3 +1,5 @@
+#install_github("KlugerLab/FastPCA",subdir="fastRPCA", host="git.yale.edu/api/v3", auth_token="3135ea8797c3ae6471fc96fc92cd382d0ab330f5")
+#testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="fastRPCA"))
 #' Prepare the fastPCA result object 
 #'
 #' This is an internal function that formats the resulting fastPCA object so that it can be handled appropriately by R
