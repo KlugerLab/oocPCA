@@ -67,6 +67,7 @@ int fastPCAFile (int inputFormat, const char *inputFileName, double **U, double 
 		fastpca_debug_print("%d iteration of Test!\n", test);
 		while (inputMatrix->hasNext()){
 			fastpca_print_matrix("Test", inputMatrix->blockSize,inputMatrix->n,inputMatrix->block);
+			//exit(-1);
 		}
 	}
 	fastpca_debug_print("%s", "\n\nBegin PCA...\n");
@@ -138,6 +139,7 @@ return 1;
 	if (centering_column == 1) {
 		inputMatrix->centerColumns();	
 	}
+	fastpca_debug_print("Centering columns: %d\n\n",centering_column);
 	if (info < 0 ) {
 		char error [100];
 		sprintf(error,"An unknown error has occured in inputMatrix->init(): %d", info); 

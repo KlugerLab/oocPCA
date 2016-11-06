@@ -23,7 +23,7 @@ InputMatrixMemory::InputMatrixMemory( double * A, long long maxMemoryBytes, int 
 	this->block = A;
 	this->m = m;
 	this->n = n;
-	//fastpca_debug_print ("m %lld n %lld", this->m,this->n);
+	fastpca_debug_print ("m %lld n %lld", this->m,this->n);
 
 }
 
@@ -37,6 +37,20 @@ int InputMatrixMemory::init() {
 	this->firstIt = true;
 	this->remainderIt = false;
 	fastpca_debug_print ("%s", "Init complete");
+
+	//Setting centers to zero
+	this->rowMeans = (double *) malloc(this->m*sizeof(double));
+	this->rowMeansFlags = (bool *)malloc(this->m*sizeof(bool));
+	for (int i=0; i<this->m; i++) {
+		this->rowMeansFlags[i] = false;
+	}
+	this->colMeans = (double *) malloc(this->n*sizeof(double));
+	for (int i=0; i<this->n; i++) {
+		this->colMeans[i] = 0;
+	}
+
+
+
 	return 1;
 }
 int InputMatrixMemory::hasNext() {

@@ -40,7 +40,7 @@ int InputMatrix::init () {
 	this->calculatedRemainderBlockSize	 = m % this->calculatedBlockSize;
 	this->blockSize   = this->calculatedBlockSize;
 
-	fastpca_debug_print("m:%lld, n:%lld, blockSize:%d,  totalMem: %lld, blockNum:%d, calculated block size %lld,  remainder: %lld\n", m,n, blockSize, totalMem, blockNum, this->calculatedBlockSize, this->calculatedRemainderBlockSize);
+	fastpca_debug_print("m:%lld, n:%lld, blockSize:%d,  totalMem: %lld, blockNum:%d, calculated block size %lld,  remainder: %d\n", m,n, blockSize, totalMem, blockNum, this->calculatedBlockSize, this->calculatedRemainderBlockSize);
 	long long blockSizeBytes = (long long) this->calculatedBlockSize*(long long) this->n* (long long) sizeof( double );
 	//this->block    = (double *)mkl_malloc( (long long) this->calculatedBlockSize*this->n*sizeof( double ), 64 );
 	//fastpca_debug_print("Would you like to proceed in allocating %le bytes? \n<enter> to continue, ctrl+c to cancel.\n", (double)blockSizeBytes);
@@ -74,6 +74,7 @@ int InputMatrix::init () {
 	for (int i=0; i<this->n; i++) {
 		this->colMeans[i] = 0;
 	}
+	this->centerColumnsFlag = false;
 
 	fastpca_debug_print("%s", "The block was allocated, proceeding to load the first block...\n");
 	loadNextBlock();
@@ -151,7 +152,7 @@ int InputMatrix::preprocessBlock() {
 			}
 			if (centerColumnsFlag) {
 				this->block[i*n+j] -= this->colMeans[j];
-				//fastpca_debug_print("Changing %lf by %lf \n", this->block[i*n+j], this->colMeans[j]);
+			//fastpca_debug_print("Changing %lf by %lf \n", this->block[i*n+j], this->colMeans[j]);
 			}
 		}
 

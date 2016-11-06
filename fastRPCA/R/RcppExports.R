@@ -65,17 +65,17 @@ fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=FALSE,centeringRow=FALSE
 	if (!identical(TRUE,diffsnorm)  && !identical(FALSE, diffsnorm)) {
 		    stop("diffsnorm must be TRUE or FALSE");
 	}
-	if (!identical(TRUE,centeringRow)  && !identical(FALSE, centeringRow)) {
-		    stop("centeringRow must be TRUE or FALSE");
-	}
 	if (!identical(TRUE,centeringColumn)  && !identical(FALSE, centeringColumn)) {
 		    stop("centeringColumn must be TRUE or FALSE");
+	}
+	if (identical(TRUE,centeringRow)  ||  identical(TRUE, centeringColumn)) {
+		    stop("For in-memory matrices, centering matrices is not supported ");
 	}
 	#Swapping n and m becaue it is column major.  So, the U will be the V and vice versa.
 	n = nrow(inputMatrix);
 	m = ncol(inputMatrix);
 	
-	result = .Call( 'fastRPCA', 'memory', as.matrix(inputMatrix), m, n, k,l,its, -1, centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
+	result = .Call( 'fastRPCA', 'memory', as.matrix(inputMatrix), m, n, k,l,its, -1, FALSE, FALSE,diffsnorm, PACKAGE = 'fastRPCA');
 	V<- t(matrix(result$U, ncol = m, nrow = k))
 	result$U <- t(matrix(result$V, ncol = n, nrow = k))
 	result$V <-  V;
@@ -131,7 +131,6 @@ fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRo
 		    stop("centeringColumn must be TRUE or FALSE");
 	}
 
-	print("okay wahts toing on2");
 	result = .Call( 'fastRPCA', 'csv', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
 	m = result$dims[1]
 	n = result$dims[2]

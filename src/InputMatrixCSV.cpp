@@ -28,7 +28,6 @@ int InputMatrixCSV::init() {
 	this->n=0;
 	char ch;
 	while(eigenstratFile >> std::noskipws >> ch ) {
-		//printf("%d,%d=%c\n",m,eachLineN,ch);
 		if (ch == '\n'){
 			if (m==0) {
 				this->n = eachLineN+1;
@@ -66,7 +65,9 @@ int InputMatrixCSV::loadNextBlock() {
 	//load this->blockSize rows
 	while(i < ( this->blockSize) && eigenstratFile >> std::noskipws >> num ) {
 
+
 		(this->block)[(long long)i*n+j] = num;
+		//fastpca_debug_print("%d,%d = %lf\n", i*n, j, (this->block)[(long long)i*n+j]);
 		//If reach end of file, start from the beginning
 		eigenstratFile >> std::noskipws >> ch;
 		if (ch == '\n'){

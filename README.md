@@ -15,6 +15,11 @@ OR:
 2. `cd fastRPCA`
 3. `R CMD INSTALL .`
 
+
+
+###R Testing
+Run the testing suite using the following command: `devtools::test('fastRPCA')`
+
 ##Installing Command-line Implementation
 1. Clone this git repository
 2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
