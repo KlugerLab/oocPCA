@@ -61,3 +61,40 @@ for (m in testDim){
 	}
 }
 
+
+
+
+
+context("Small BED files")
+D <- matrix(c(1,1,1,2,2,2,1,0,1,0,0,1,1,2,1,2,2,1,0,0,0,1,1,2,2,2,2,1,1,1,0,0,1,1,2),nrow=7,ncol=5, byrow=TRUE);
+fn <- "/Users/george/Research_Local/FastPCA4/FastPCA/fastRPCA/inst/tests/example";
+for (centering in c(0,1,2)){
+	k_ = 5;
+	l_ =5;
+	n = 5;
+	memories <- c(2*n*8,3*n*8, 4*n*8, 1E9 )
+	if (centering == 0 ){
+		rowCentering_ <- FALSE;
+		colCentering_ <- FALSE;
+		Dt <- D;
+	}else if (centering ==1){
+		rowCentering_ <- TRUE;
+		colCentering_ <- FALSE;
+		Dt <- t(scale(t(D), center=TRUE, scale=FALSE));
+	}else {
+		rowCentering_ <- FALSE;
+		colCentering_ <- TRUE;
+		Dt <- scale(D, center=TRUE, scale=FALSE);
+	}
+
+	for (mem in memories) {
+		fastDecomp <- fastPCA_BED(fn, k=k_,l=l_, mem=mem, diffsnorm=TRUE, centeringColumn = colCentering_, centeringRow = rowCentering_)
+		diffNorm <- norm(Dt - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
+		test_that( sprintf("CSV - m: %d, n: %d, k: %d, mem %d, centeringRow :%d, centeringCol: %d", fastDecomp$dims[1], fastDecomp$dims[2], k_, mem, rowCentering_, colCentering_), {
+				  expect_that(diffNorm,equals(0));
+})
+	}
+}
+
+
+

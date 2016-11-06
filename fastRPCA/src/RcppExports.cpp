@@ -97,10 +97,13 @@ RcppExport SEXP fastRPCA(SEXP inputFormat_temp, SEXP inputMatrix_temp,SEXP m_tem
 		m_ = m;
 		n_ = n;
 
-	}else {
+	}else if (inputFormat=="csv"){
 		std::string inputMatrixPath= Rcpp::as<std::string>(inputMatrix_temp);
 		returnCode=fastPCAFile(1, inputMatrixPath.c_str(), &U, &S, &V, m_,n_,k, l, its,memory, centering_row, centering_column, dits, diffsnorm, snorm);
 
+	}else {
+		std::string inputMatrixPath= Rcpp::as<std::string>(inputMatrix_temp);
+		returnCode=fastPCAFile(2, inputMatrixPath.c_str(), &U, &S, &V, m_,n_,k, l, its,memory, centering_row, centering_column, dits, diffsnorm, snorm);
 	}
 
 	switch (returnCode){

@@ -109,7 +109,6 @@ fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=FALSE,centeringRow=FALSE
 #' fastDecomp <- fastPCA_CSV(fn, k=k_, mem=n*8*5, diffsnorm=TRUE)
 #' @export
 fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
-	print("okay wahts toing on");
 	if (!file.exists(inputFile)) {
 		stop("File does not exist");
 	}
@@ -145,24 +144,75 @@ fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRo
 #
 #
 #}
-#fastPCA_BED <- function (inputFile,k=5, mem=144, l=5, its=2,phenoFile=-1, diffsnorm=0,centeringRow=0, centeringColumn = 0) {
-#
-#	#result = .Call( 'fastRPCA','bed', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm);
-#	result$U <- t(matrix(result$U, ncol = result$dim[1], nrow = k))
-#	result$V <- t(matrix(result$V, ncol = result$dim[2], nrow = k))
-#	result$S <- matrix(result$S, ncol = k, nrow = k)
-#	fam <- read.table(paste(inputFile,'.fam', sep=""), sep=" ", header=FALSE);
-#	row.names(result$V) <- fam[,2];
-#
-#	#TODO: make this an optional argument to this function
-#	if (phenoFile != -1) {
-#		phenos <- read.table(phenoFile, header=TRUE);
-#		row.names(phenos) <- phenos$SUBJID;
-#		result$phenos = phenos[row.names(result$V),];
-#	}
-#	return (result);
-#
-#}
+#' Perform fast SVD for a matrix in BED format
+#'
+#' This function performs a nearly optimal rank-k approximation to the singular value decomposition inputMatrix = USV' on a matrix that is passed via BED format.  Please see references for explanation of 'nearly optimal.'
+#'
+#' @param inputFile Base file name for the .bed,.fam, .bim files
+#' @param k Rank of decomposition. Default: 5
+#' @param l Block size. Default k+2
+#' @param its Number of normalized power iterations. Default: 2
+#' @param diffsnorm Calculate 2-norm accuracy, i.e. ||A-USV||_2. 
+#' @param centeringRow Center the rows prior to decomposition.
+#' @param centeringRow Center the columns prior to decomposition.
+#' @return A FastPCA object, containing the decomposition.
+#'
+#' @export
+fastPCA_BED<- function (inputFile,k=5, l, mem, its=2,phenoFile=-1,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
+
+	bedFile <- sprintf("%s.bed", inputFile);
+	famFile <- sprintf("%s.fam", inputFile);
+	bimFile <- sprintf("%s.bim", inputFile);
+
+	if (!file.exists(bedFile)) {
+		stop("Bed file does not exist");
+	}
+
+	if (!file.exists(famFile)) {
+		stop("Fam file does not exist");
+	}
+
+
+	if (!file.exists(bimFile)) {
+		stop("Bim file does not exist");
+	}
+
+	if (missing(l)){
+		l = k+2;
+	}
+	
+	if (k <=0 || l<=0  || mem <=0  ||  its <=0 ){
+		stop("k,l,mem, its all must be positive numbers");
+	}		
+
+	if (!identical(TRUE,diffsnorm)  && !identical(FALSE, diffsnorm)) {
+		    stop("diffsnorm must be TRUE or FALSE");
+	}
+	if (!identical(TRUE,centeringRow)  && !identical(FALSE, centeringRow)) {
+		    stop("centeringRow must be TRUE or FALSE");
+	}
+	if (!identical(TRUE,centeringColumn)  && !identical(FALSE, centeringColumn)) {
+		    stop("centeringColumn must be TRUE or FALSE");
+	}
+	result = .Call( 'fastRPCA', 'bed', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
+	m = result$dims[1]
+	n = result$dims[2]
+
+	result$U <- t(matrix(result$U, ncol = result$dim[1], nrow = k))
+	result$V <- t(matrix(result$V, ncol = result$dim[2], nrow = k))
+	result$S <- matrix(result$S, ncol = k, nrow = k)
+	fam <- read.table(paste(inputFile,'.fam', sep=""), sep="", header=FALSE);
+	row.names(result$V) <- fam[,2];
+
+	#TODO: make this an optional argument to this function
+	if (phenoFile != -1) {
+		phenos <- read.table(phenoFile, header=TRUE);
+		row.names(phenos) <- phenos$SUBJID;
+		result$phenos = phenos[row.names(result$V),];
+	}
+	return (result);
+
+}
 #
 #fastPCA_EIGEN <- function (inputFile,k=5, mem=144, l=5, its=2,diffsnorm=0,centering=0) {
 #

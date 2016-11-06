@@ -34,8 +34,8 @@ dim(D)
 
 Dcc <- scale(D, center=TRUE, scale=FALSE);
 Drc <- t(scale(t(D), center=TRUE, scale=FALSE));
-#fastDecomp <- fastPCA(D, k=k_, diffsnorm=TRUE, centeringColumn=TRUE)
-fastDecomp <- fastPCA(D, k=k_, diffsnorm=TRUE, centeringColumn = TRUE)
+fastDecomp <- fastPCA(D, k=k_, diffsnorm=TRUE, centeringRow=TRUE)
+#fastDecomp <- fastPCA(D, k=k_, diffsnorm=TRUE, centeringRow = TRUE)
 
 str(fastDecomp)
 norm(Dcc - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
@@ -46,20 +46,39 @@ norm(D - slowDecomp$u %*% diag(slowDecomp$d) %*%t(slowDecomp$v), type='2')
 
 #####Small example csv
 require(fastRPCA)
-#k_ <- 20;
-#m = 90E1;
-#n = 90E0;
-m=12;
-n =10;
-k_ = 5
+k_ <- 20;
+m = 97E1;
+n = 93E0;
+#m=12;
+#n =10;
+#k_ =5
 B <- matrix(rexp(m*k_), m)
 C <- matrix(rexp(k_*n), k_)
 D <- B %*%C;
 Dcc <- scale(D, center=TRUE, scale=FALSE);
+Drc <- t(scale(t(D), center=TRUE, scale=FALSE));
 fn = "/Users/george/Research_Local/FastPCA4/FastPCA/fastRPCA/test_csv.csv"
 write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
 #fastDecomp <- fastPCA_CSV(fn, k=k_, mem=(10E6 + m* n*8), diffsnorm=TRUE)
-fastDecomp <- fastPCA_CSV(fn, k=k_, mem=( 3*m*8), diffsnorm=TRUE,centeringColumn=TRUE)
+fastDecomp <- fastPCA_CSV(fn, k=k_, mem=( 12312 + 8*m*8), diffsnorm=TRUE,centeringColumn=TRUE)
+norm(Dcc - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
+require(fastRPCA)
+k_ <- 20;
+m = 100;
+n = 50;
+#m=12;
+#n =10;
+#k_ =5
+B <- matrix(rexp(m*k_), m)
+C <- matrix(rexp(k_*n), k_)
+D <- B %*%C;
+fn = "/Users/george/Research_Local/FastPCA4/FastPCA/fastRPCA/test_csv.csv"
+write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
+Dcc <- scale(D, center=TRUE, scale=FALSE);
+Drc <- t(scale(t(D), center=TRUE, scale=FALSE));
+
+#fastDecomp <- fastPCA_CSV(fn, k=k_, mem=(4342), diffsnorm=TRUE,centeringCol=TRUE)
+fastDecomp <- fastPCA_CSV(fn, k=k_, mem=(4342), diffsnorm=TRUE,centeringCol=TRUE)
 norm(Dcc - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
 
 ####Big example: in core R
@@ -69,6 +88,24 @@ D <- B %*%C;
 dim(D)
 fastDecomp <- fastPCA(D, k=20, diffsnorm=TRUE)
 str(fastDecomp)
+
+##################
+#A <- matrix(c(1,1,1,0,0,0,1,2,1,2,2,1,1,0,1,0,0,1,2,2,2,1,1,0,0,0,0,1,1,1,2,2,1,1,0),nrow=7,ncol=5, byrow=TRUE);
+A <- matrix(c(1,1,1,2,2,2,1,0,1,0,0,1,1,2,1,2,2,1,0,0,0,1,1,2,2,2,2,1,1,1,0,0,1,1,2),nrow=7,ncol=5, byrow=TRUE);
+fastDecomp <- fastPCA_BED("/Users/george/Research_Local/FastPCA4/FastPCA/fastRPCA/inst/tests/example", k=5, l=5, mem=2*5*8,diffsnorm=TRUE, centeringRow=TRUE);
+
+Acc <- scale(A,center=TRUE, scale=FALSE)
+Arc <- t(scale(t(A),center=TRUE, scale=FALSE))
+
+norm(Arc - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
+reconA <- fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V)
+
+
+fn <-  "/Users/george/Research_Local/FastPCA4/FastPCA/fastRPCA/inst/tests/example.fam";
+fam <- read.table(fn, sep=" ", header=FALSE);
+
+
+
 
 
 ###################
