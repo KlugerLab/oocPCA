@@ -23,7 +23,7 @@ fastPCA_base <- function(result, k) { result$U <- t(matrix(result$U, ncol = resu
 #' @param its Number of normalized power iterations. Default: 2
 #' @param diffsnorm Calculate 2-norm accuracy, i.e. ||A-USV||_2. 
 #' @param centeringRow Center the rows prior to decomposition.
-#' @param centeringRow Center the columns prior to decomposition.
+#' @param centeringColumn Center the columns prior to decomposition.
 #' @return A FastPCA object, containing the decomposition.
 #' @examples
 #' 
@@ -32,7 +32,7 @@ fastPCA_base <- function(result, k) { result$U <- t(matrix(result$U, ncol = resu
 #' n = 10E3;
 #' B <- matrix(rexp(m*k_), m)
 #' C <- matrix(rexp(k_*n), k_)
-#' D <- B %*%C;
+#' D <- B %*% C;
 #' dim(D)
 #' fastDecomp <- fastPCA(D, k=k_, diffsnorm=TRUE)
 #' str(fastDecomp)
@@ -68,6 +68,9 @@ fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=FALSE,centeringRow=FALSE
 	if (!identical(TRUE,centeringColumn)  && !identical(FALSE, centeringColumn)) {
 		    stop("centeringColumn must be TRUE or FALSE");
 	}
+	if (identical(TRUE,centeringRow)  && identical(TRUE, centeringColumn)) {
+		    stop("Both centeringRow and centeringColumn cannot be TRUE");
+	}
 	if (identical(TRUE,centeringRow)  ||  identical(TRUE, centeringColumn)) {
 		    stop("For in-memory matrices, centering matrices is not supported ");
 	}
@@ -90,23 +93,24 @@ fastPCA<- function (inputMatrix,k=5, l, its=2,diffsnorm=FALSE,centeringRow=FALSE
 #' @param inputFile csv containing matrix to decompose
 #' @param k Rank of decomposition. Default: 5
 #' @param l Block size. Default k+2
+#' @param mem Amount of memory the algorithm is allowed to use in bytes.  Must be greater than the number of columns * 8 (i.e. the memory to store one row).
 #' @param its Number of normalized power iterations. Default: 2
 #' @param diffsnorm Calculate 2-norm accuracy, i.e. ||A-USV||_2. 
 #' @param centeringRow Center the rows prior to decomposition.
-#' @param centeringRow Center the columns prior to decomposition.
+#' @param centeringColumn Center the columns prior to decomposition.
 #' @return A FastPCA object, containing the decomposition.
 #' @examples
 #' 
 #' k_ <- 20;
-#' m = 9E2;
-#' n = 10E2;
+#' m = 200;
+#' n = 100;
 #' B <- matrix(rexp(m*k_), m)
 #' C <- matrix(rexp(k_*n), k_)
 #' D <- B %*%C;
 #' dim(D)
 #' fn = "test_csv.csv"
 #' write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
-#' fastDecomp <- fastPCA_CSV(fn, k=k_, mem=n*8*5, diffsnorm=TRUE)
+#' fastDecomp <- fastPCA_CSV(fn, k=k_, mem=n*8*100, diffsnorm=TRUE)
 #' @export
 fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
 	if (!file.exists(inputFile)) {
@@ -129,6 +133,9 @@ fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRo
 	if (!identical(TRUE,centeringColumn)  && !identical(FALSE, centeringColumn)) {
 		    stop("centeringColumn must be TRUE or FALSE");
 	}
+	if (identical(TRUE,centeringRow)  && identical(TRUE, centeringColumn)) {
+		    stop("Both centeringRow and centeringColumn cannot be TRUE");
+	}
 
 	result = .Call( 'fastRPCA', 'csv', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
 	m = result$dims[1]
@@ -140,25 +147,47 @@ fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRo
 	return (fastPCA_base(result, k));
 
 }
-#fastPCA_Phenos <- function (inputFile) {
-#
-#
-#}
 #' Perform fast SVD for a matrix in BED format
 #'
-#' This function performs a nearly optimal rank-k approximation to the singular value decomposition inputMatrix = USV' on a matrix that is passed via BED format.  Please see references for explanation of 'nearly optimal.'
+#' This function performs a nearly optimal rank-k approximation to the singular value decomposition inputMatrix = USV' on a GWAS matrix that is passed via BED format.  Please see references for explanation of 'nearly optimal.'
+#' 
+#' Missing values will be imputed by replacing the missing value with the row average.  If centeringRow is set to TRUE, then this just means replacing the missing values with 0.
+#' Note that unlike in the other functions, centeringRow defaults to true here
 #'
-#' @param inputFile Base file name for the .bed,.fam, .bim files
+#' @param inputFile Base file name for the .bed,.fam, .bim files.  All three of these files must be present in the same folder: <inputFile>.bed <inputFile>.fam <inputFile>.bim.
 #' @param k Rank of decomposition. Default: 5
 #' @param l Block size. Default k+2
+#' @param mem Amount of memory the algorithm is allowed to use in bytes.  Must be greater than the number of columns * 8 (i.e. the memory to store one row).
+#' @param phenoFile Path to a phenotype file, the attributes of which will be returned in the FastPCA object, in the same order as the V matrix
 #' @param its Number of normalized power iterations. Default: 2
 #' @param diffsnorm Calculate 2-norm accuracy, i.e. ||A-USV||_2. 
-#' @param centeringRow Center the rows prior to decomposition.
-#' @param centeringRow Center the columns prior to decomposition.
-#' @return A FastPCA object, containing the decomposition.
+#' @param centeringRow Center the rows prior to decomposition. Default: TRUE
+#' @param centeringColumn Center the columns prior to decomposition. Default: FALSE
+#' @return A FastPCA object, containing the decomposition.  Also, has the ordered phenotype information
+#' @examples
+#' 
+#' fn <-sprintf("%s/example_with_impute", system.file("tests", package="fastRPCA")) ;
+#' fastDecomp <- fastPCA_BED(fn, k=5,l=5, mem=1E3, diffsnorm=TRUE)
+#' str(fastDecomp)
+#' 
+#' #Now, to check, let's take the same matrix and do the imputation and row centering in R
+#' Dm <- matrix(c( 1,1,1,NA,2,2, 1, 0,NA,0, 0,1,1,2,1,2,2,1,0,0,0,1,1,2,2,1,1,NA,1,2,2,2,NA,1,1),nrow=7,ncol=5, byrow=TRUE);
+#' D <- Dm;
+#' k <- which(is.na(D), arr.ind=TRUE)
+#' D[k] <- rowMeans(D, na.rm=TRUE)[k[,1]]
+#' Dt <- t(scale(t(D), center=TRUE, scale=FALSE));
+#' norm(Dt - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
+#' 
+#' 
+#' #Another example
+#' #Before publication, this example will be replaced by test data
+#' #fastDecompBed10E3 <- fastPCA_BED("/data/GERA_DECRYPTED/LindermanAnalysis/EUR/Benchmark/eur_100000_62318/eur_100000_62318",k = 20, mem=8e+10, l=22,centeringRow=TRUE, phenoFile="/data/GERA_DECRYPTED/38852/PhenoGenotypeFiles/RootStudyConsentSet_phs000674.GERA.v1.p1.c1.HROO/PhenotypeFiles/phs000674.v1.pht003641.v1.p1.c1.Survey.HROO.txt")
+#' #str(fastDecompBed10E3)
+
+#' #plot(fastDecompBed10E3$V[,1], fastDecompBed10E3$V[,2], pch='.', col=factor(fastDecompBed10E3$phenos$RACE))
 #'
 #' @export
-fastPCA_BED<- function (inputFile,k=5, l, mem, its=2,phenoFile=-1,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
+fastPCA_BED<- function (inputFile,k=5, l, mem, its=2,phenoFile=-1,diffsnorm=FALSE,centeringRow=TRUE, centeringColumn = FALSE) {
 
 	bedFile <- sprintf("%s.bed", inputFile);
 	famFile <- sprintf("%s.fam", inputFile);
@@ -194,6 +223,9 @@ fastPCA_BED<- function (inputFile,k=5, l, mem, its=2,phenoFile=-1,diffsnorm=FALS
 	if (!identical(TRUE,centeringColumn)  && !identical(FALSE, centeringColumn)) {
 		    stop("centeringColumn must be TRUE or FALSE");
 	}
+	if (identical(TRUE,centeringRow)  && identical(TRUE, centeringColumn)) {
+		    stop("Both centeringRow and centeringColumn cannot be TRUE");
+	}
 	result = .Call( 'fastRPCA', 'bed', inputFile, -1, -1, k,l,its, mem,centeringRow, centeringColumn,diffsnorm, PACKAGE = 'fastRPCA');
 	m = result$dims[1]
 	n = result$dims[2]
@@ -204,7 +236,6 @@ fastPCA_BED<- function (inputFile,k=5, l, mem, its=2,phenoFile=-1,diffsnorm=FALS
 	fam <- read.table(paste(inputFile,'.fam', sep=""), sep="", header=FALSE);
 	row.names(result$V) <- fam[,2];
 
-	#TODO: make this an optional argument to this function
 	if (phenoFile != -1) {
 		phenos <- read.table(phenoFile, header=TRUE);
 		row.names(phenos) <- phenos$SUBJID;

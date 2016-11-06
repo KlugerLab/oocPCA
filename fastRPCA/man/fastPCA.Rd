@@ -20,7 +20,7 @@ fastPCA(inputMatrix, k = 5, l, its = 2, diffsnorm = FALSE,
 
 \item{centeringRow}{Center the rows prior to decomposition.}
 
-\item{centeringRow}{Center the columns prior to decomposition.}
+\item{centeringColumn}{Center the columns prior to decomposition.}
 }
 \value{
 A FastPCA object, containing the decomposition.
@@ -35,7 +35,7 @@ m = 9E2;
 n = 10E3;
 B <- matrix(rexp(m*k_), m)
 C <- matrix(rexp(k_*n), k_)
-D <- B \%*\%C;
+D <- B \%*\% C;
 dim(D)
 fastDecomp <- fastPCA(D, k=k_, diffsnorm=TRUE)
 str(fastDecomp)

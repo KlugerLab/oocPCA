@@ -1,5 +1,6 @@
 #setwd('/data/Linderman/FastPCA4/Rsrc/')
 #install_github("KlugerLab/FastPCA",subdir="fastRPCA", host="git.yale.edu/api/v3", auth_token="3135ea8797c3ae6471fc96fc92cd382d0ab330f5") 
+#testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="fastRPCA"))
 
 source('fastRPCA.R') 
 

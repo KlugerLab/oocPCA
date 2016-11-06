@@ -1,5 +1,6 @@
 EXE_INCLUDEPATH = -I../include
-CFLAGS=-O3 -std=c++0x -m64 -DMKL_ILP64 -fopenmp -DDEBUG -DUSE_MKL
+#CFLAGS=-O3 -std=c++0x -m64 -DMKL_ILP64 -fopenmp -DDEBUG -DUSE_MKL
+CFLAGS=-O3 -std=c++0x -m64 -DMKL_ILP64 -fopenmp -DUSE_MKL
 
 
 platform=$(shell uname)
@@ -7,7 +8,6 @@ ifeq ($(platform),Darwin)
 #mac
 CFLAGS += -DOSX
 EXE_INCLUDEPATH = -I../include  -I/opt/intel/compilers_and_libraries_2016.1.111/mac/mkl/include/ 
-#CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.dylib"'
 CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.dylib"'
 #LIBS =  -L../lib  -lfastpca_custommkl -L../lib -liomp5 -ldl -lpthread -lm -Wl,-rpath,/Users/george/Research_Local/FastPCA4/FastPCA/lib
 LIBS =  -L../lib  -lfastpca_custommkl -L../lib -liomp5 -ldl -lpthread -lm -Wl,-rpath,/Users/george/Research_Local/FastPCA4/FastPCA/lib  -DMKL_ILP64 -m64
@@ -46,6 +46,7 @@ EXE_target: $(EXE_OBJ_FILES)
 #Link the objects into the final R library
 R_target: $(EXE_OBJ_FILES) 
 	$(CC) $(CFLAGS) -o $(R_TARGET) $(EXE_OBJ_FILES) $(LIBS) -shared
+	cp ../include/ExternalInterface.h ../fastRPCA/src
 
 #Build the CPP files into objects
 ../build/%.o: %.cpp
