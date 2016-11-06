@@ -19,6 +19,7 @@ OR:
 
 ###R Testing
 Run the testing suite using the following command: `devtools::test('fastRPCA')`
+or `testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="fastRPCA")))`
 
 ##Installing Command-line Implementation
 1. Clone this git repository

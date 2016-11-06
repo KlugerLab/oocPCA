@@ -67,7 +67,8 @@ for (m in testDim){
 
 context("Small BED files")
 D <- matrix(c(1,1,1,2,2,2,1,0,1,0,0,1,1,2,1,2,2,1,0,0,0,1,1,2,2,2,2,1,1,1,0,0,1,1,2),nrow=7,ncol=5, byrow=TRUE);
-fn <- "/Users/george/Research_Local/FastPCA4/FastPCA/fastRPCA/inst/tests/example";
+#fn <- "/Users/george/Research_Local/FastPCA4/FastPCA/fastRPCA/inst/tests/example";
+fn <-sprintf("%s/example", system.file("tests", package="fastRPCA")) ;
 for (centering in c(0,1,2)){
 	k_ = 5;
 	l_ =5;
