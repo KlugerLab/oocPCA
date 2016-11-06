@@ -9,7 +9,7 @@ following the processes outlined below:
 
 ##R Package Installation
 1. Install devtools: `install.packages('devtools')`
-2. Install fastRPCA: `install_github("KlugerLab/FastPCA",subdir="fastRPCA",
+2. Install fastRPCA: `devtools::install_github("KlugerLab/FastPCA",subdir="fastRPCA",
    host="git.yale.edu/api/v3", auth_token="<>")`
 
 OR:

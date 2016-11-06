@@ -29,7 +29,7 @@ Maintainer: \packageMaintainer{fastRPCA}
  n = 10E3;
  B <- matrix(rexp(m*k_), m)
  C <- matrix(rexp(k_*n), k_)
- D <- B %*%C;
+ D <- B \%*\%C;
  dim(D)
  fastDecomp <- fastPCA(D, k=k_, diffsnorm=TRUE)
  str(fastDecomp)
