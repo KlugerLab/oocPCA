@@ -1,5 +1,7 @@
 system(sprintf("install_name_tool -add_rpath %s  ../inst/libs/libfastpca.dylib",system.file("libs", package="fastRPCA") ))
+system(sprintf("install_name_tool -add_rpath %s  ../src/fastRPCA.so",system.file("libs", package="fastRPCA") ))
 system(sprintf("install_name_tool -change ../fastRPCA/inst/libs/libfastpca.dylib @rpath/libfastpca.dylib ../src/fastRPCA.so",system.file("libs", package="fastRPCA") ))
+#print(sprintf("install_name_tool -change ../fastRPCA/inst/libs/libfastpca.dylib @rpath/libfastpca.dylib ../src/fastRPCA.so",system.file("libs", package="fastRPCA") ))
 print(getwd())
 files <- Sys.glob(paste0("*", SHLIB_EXT))
 dest <- file.path(R_PACKAGE_DIR, paste0('libs', R_ARCH))
