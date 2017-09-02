@@ -581,8 +581,8 @@ using namespace std::chrono;
 	fastpca_debug_print("The PCA function took %lf seconds.\n", time_span_pca.count());
 
 	//fastpca_print_matrix("S", k,k,S);
-//	fastpca_print_matrix("U", inputMatrix->m,k,U);
-//fastpca_print_matrix("V", inputMatrix->n,k,V);
+	//fastpca_print_matrix("U", inputMatrix->m,k,U);
+	//fastpca_print_matrix("V", inputMatrix->n,k,V);
 	/*********************************************************************
 	 *  Print the results of the SVD for diagnostic purposes
 	 */
@@ -606,6 +606,7 @@ using namespace std::chrono;
 	if (! opt.isSet("-eigenOutput") && ! opt.isSet("-binaryOutput")){
 		fastpca_debug_print("%s",   "-eigenOutput and -binaryOutput not set, no file outputting");
 	}
+
 
 
 	/*********************************************************************

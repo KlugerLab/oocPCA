@@ -22,14 +22,12 @@ int fastpca_gemm(CBLAS_ORDER layout, CBLAS_TRANSPOSE transposeA,
 			const long long, const double *, const long long,
 			const double, double *, const long long);
 	void 	*hndl;
-	//hndl = dlopen("libcustom_mkl.so", RTLD_LOCAL | RTLD_LAZY);
-	//hndl = dlopen("/lib/libcustom_mkldist.so", RTLD_LOCAL | RTLD_LAZY);
+	/*
 	#ifdef __APPLE__
 	hndl = dlopen("libfastpca_custommkl.dylib", RTLD_LOCAL | RTLD_LAZY);
 	#else
 	hndl = dlopen("libfastpca_custommkl.so", RTLD_LOCAL | RTLD_LAZY);
 	#endif
-	//hndl = dlopen(MKL_CUSTOM_LIBRARY, RTLD_LOCAL | RTLD_LAZY);
 	if (!hndl) {
 		fprintf(stderr, "%s\n", dlerror());
 		exit(EXIT_FAILURE);
@@ -37,6 +35,9 @@ int fastpca_gemm(CBLAS_ORDER layout, CBLAS_TRANSPOSE transposeA,
 	}
 	*(void **) (&dgemm_fxn) = dlsym(hndl,"cblas_dgemm");
 	dgemm_fxn(layout, transposeA, transposeB, 
+			m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+	*/
+	cblas_dgemm(layout, transposeA, transposeB, 
 			m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
 	return 1;
 }
