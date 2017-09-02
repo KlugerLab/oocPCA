@@ -87,7 +87,6 @@ fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRo
 		    stop("Both centeringRow and centeringColumn cannot be TRUE");
 	}
 
-	R.utils::countLines(inputFile);
 
 	base_outname = "oocRPCA.binmatrix"
 	pcacall <- sprintf('%s/fastpca.xx -k %d -csvI %s -binaryOutput %s -mem %d -l %d -its %d', system.file("build", package="oocRPCA"), k, inputFile, base_outname, mem , l, its )
