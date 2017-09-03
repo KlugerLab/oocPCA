@@ -1,13 +1,11 @@
-#' Prepare the fastPCA result object 
+#' Prepare the oocPCA result object 
 #'
-#' This is an internal function that formats the resulting fastPCA object so that it can be handled appropriately by R
+#' This is an internal function that formats the resulting oocPCA object so that it can be handled appropriately by R
 #'
-#' @useDynLib fastRPCA
-#' @importFrom Rcpp evalCpp
-#' @param result Value of one of the other functions.
+#' @param base_outname The basename for the matrices U, V, and S from the fastpca.xx call
 #' @param k  Rank of the transformation.
-#' @return A FastPCA object, containing the decomposition.
-fastPCA_base <- function( base_outname, k) {
+#' @return A list containing the decomposition.
+oocPCA_base <- function( base_outname, k) {
 	m = file.size(sprintf("%s.U", base_outname))/(8*k);
 	n = file.size(sprintf("%s.V", base_outname))/(8*k);
 
@@ -34,7 +32,7 @@ fastPCA_base <- function( base_outname, k) {
 
 }
 
-#' Perform fast SVD for a matrix in CSV format
+#' Perform out-of-core SVD for a matrix in CSV format
 #'
 #' This function performs a nearly optimal rank-k approximation to the singular value decomposition inputMatrix = USV' on a matrix that is passed via CSV format.  Please see references for explanation of 'nearly optimal.'
 #'
@@ -46,7 +44,7 @@ fastPCA_base <- function( base_outname, k) {
 #' @param diffsnorm Calculate 2-norm accuracy, i.e. ||A-USV||_2. 
 #' @param centeringRow Center the rows prior to decomposition.
 #' @param centeringColumn Center the columns prior to decomposition.
-#' @return A FastPCA object, containing the decomposition.
+#' @return A list containing the decomposition.
 #' @examples
 #' 
 #' k_ <- 10;
@@ -59,10 +57,11 @@ fastPCA_base <- function( base_outname, k) {
 #' fn = "test_csv.csv"
 #' write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
 #' library(oocRPCA);
-#' fastDecomp <- fastPCA_CSV(fn, k=k_, mem=n*8*100, diffsnorm=TRUE)
+#' fastDecomp <- oocPCA_CSV(fn, k=k_, mem=n*8*100, diffsnorm=TRUE)
 #' norm( D - fastDecomp$U %*% fastDecomp$S %*% t(fastDecomp$V))
+#' unlink(fn)
 #' @export
-fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
+oocPCA_CSV<- function (inputFile,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
 	if (!file.exists(inputFile)) {
 		stop("File does not exist");
 	}
@@ -95,8 +94,10 @@ fastPCA_CSV<- function (inputFile,k=5, l, mem, its=2,diffsnorm=FALSE,centeringRo
 	}else if (identical(TRUE, centeringColumn)) {
 		pcacall <- paste(pcacall, " -ccenter",  sep="")
 	}
-	#print(pcacall);
-	system(pcacall);
-	return (fastPCA_base(base_outname, k));
+	pcareturn <- system(pcacall);
+	if (pcareturn != 1) {
+		stop(sprintf("An unkonwn error has occurred during call: %s", pcacall));
+	}
+	return (oocPCA_base(base_outname, k));
 
 }

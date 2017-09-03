@@ -126,7 +126,7 @@ int InputMatrixEigenInCore::init() {
 
 int InputMatrixEigenInCore::loadNextBlock() {
 
-	printf("loading next block at %d with %d blockSize",byteCount, this->blockSize );
+	//printf("loading next block at %d with %d blockSize",byteCount, this->blockSize );
 	long long int i=0;
 	long long int j=0;
 	char genotypeByte;
@@ -173,8 +173,8 @@ int InputMatrixEigenInCore::loadNextBlock() {
 
 	byteCount++;
 	}
-	printf("Successfully loaded a block\n");
+	//printf("Successfully loaded a block\n");
 	InputMatrix::loadNextBlock();
-	printf("Finished loaded a block!!\n");
+	//printf("Finished loaded a block!!\n");
 	return 1;
 }

@@ -1,9 +1,10 @@
 Package: oocRPCA
-Title: What the Package Does (one line, title case)
+Title: Out-of-Core Randomized Principal Component Analysis (PCA)
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("George", "Linderman", email = "george.linderman@gmail.com", role = c("aut", "cre"))
+Description: Computes out-of-core randomized SVD for PCA of matrices too large to fit in the memory.
 Depends: R (>= 3.3)
-License: What license is it under?
+License: GPL( >=2)
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.0.1
