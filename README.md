@@ -27,6 +27,7 @@ Test cases for this software use the popular testing package `testthat`:
 ```R
 if(!require(testthat)) install.packages('testthat')
 testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="oocRPCA")))
+```
 
 ##Features
 * Variety of input formats and use cases
