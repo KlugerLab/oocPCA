@@ -50,8 +50,8 @@ void  fastpca_aligned_free(void* ptr) {
 	free(ptr);
 }
 int fastpca_populate_matrix_random (long long m, long long n, double * A) {
-	srand(time(NULL));
-	//srand(3);
+	//srand(time(NULL));
+	srand(3);
 	for (int i=0; i<m*n; i++) {
 		A[i] = ((double) 2.0*rand())/((double) RAND_MAX) - 1;
 

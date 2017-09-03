@@ -580,6 +580,7 @@ using namespace std::chrono;
 	}
 	fastpca_debug_print("The PCA function took %lf seconds.\n", time_span_pca.count());
 
+	//fastpca_print_matrix("A", inputMatrix->m,inputMatrix->n,inputMatrix->block);
 	//fastpca_print_matrix("S", k,k,S);
 	//fastpca_print_matrix("U", inputMatrix->m,k,U);
 	//fastpca_print_matrix("V", inputMatrix->n,k,V);

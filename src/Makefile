@@ -31,7 +31,7 @@ EXE_OBJ_FILES := $(addprefix ../build/,$(notdir $(EXE_CPP_FILES:.cpp=.o)))
 EXE_TARGET = ../build/fastpca.xx
 
 
-all: EXE_target 
+all: EXE_target csv2binary
 debug: CFLAGS += -DDEBUG
 debug: EXE_target
 
@@ -42,6 +42,8 @@ clean:
 EXE_target: $(EXE_OBJ_FILES) 
 	$(CC) $(CFLAGS) -o $(EXE_TARGET) $(EXE_OBJ_FILES) $(LIBS)
 	cp $(EXE_TARGET) ../oocRPCA/inst/build/$(EXE_TARGET)
+	g++ -I../include -o ../build/csv2binary.xx csv2binary/csv2binary.cpp
+	cp ../build/csv2binary.xx ../oocRPCA/inst/build/csv2binary.xx
 
 #Link the objects into the final R library
 

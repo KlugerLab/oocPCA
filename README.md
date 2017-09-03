@@ -1,16 +1,17 @@
 # FastPCA
-FastPCA is a Intel MKL-based, out-of-core C++ implementation of randomized
-SVD for rank-k approximation of matrices that are 1) too large to fit into
-memory and/or 2) would take too long to compute using traditional methods.
+oocPCA is a Intel MKL-based, out-of-core C++ implementation of randomized
+SVD for rank-k approximation of matrices that are too large to fit into
+memory.
 
-Two interfaces are available, via an R wrapper called fastRPCA and by
+Two interfaces are available, via an R wrapper called oocRPCA and by
 commandline.   OS X and Linux users can install the pre-compiled binaries,
 following the processes outlined below:
 
 ##R Package Installation
-1. Install devtools: `install.packages('devtools')`
-2. Install fastRPCA: `devtools::install_github("KlugerLab/FastPCA",subdir="fastRPCA",
-   host="git.yale.edu/api/v3", auth_token="<>")`
+```R
+if(!require(devtools)) install.packages("devtools") # If not already installed
+devtools::install_github("linqiaozhi/fmmRtsne", auth_token = "df6fb169997c1c59d34c6dc7254657cdf54ae8f1")
+```
 
 OR:
 
@@ -18,26 +19,17 @@ OR:
 2. `cd fastRPCA`
 3. `R CMD INSTALL .`
 
-Please see the documentation for usage: `?fastPCA ?fastPCA_CSV  ?fastPCA_BED `
+Please see the documentation for usage: `?oocPCA_CSV`
 
 ###R Testing Suite
 Test cases for this software use the popular testing package `testthat`:
 
-1. `install.packages('testthat')`
-2. `testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="fastRPCA")))`
-
-
-
-
-##Installing Command-line Implementation
-1. Clone this git repository
-2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
-   necessary dynamic libraries in the `lib` folder.  ` export
-LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`. 
+```R
+if(!require(testthat)) install.packages('testthat')
+testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="oocRPCA")))
 
 ##Features
 * Variety of input formats and use cases
-  * From memory in R
   * CSV format
   * plink's binary [BED format] (http://pngu.mgh.harvard.edu/~purcell/plink/binary.shtml) for GWAS data. 
 * All matrix algebra is done with Intel MKL (pre-compiled version already linked) making it extremely fast
@@ -52,13 +44,7 @@ LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`.
 ###Compiling from source
 ####OSX
 #####Prerequisities:
-* Intel Math Kernel Library: Highly optimized implementations of BLAS and LAPACK (Free download [here](https://software.intel.com/sites/campaigns/nest/) ).  The `lib` folder contains a [custom built shared library](https://software.intel.com/en-us/node/528690), but the headers cannot be distributed.  As such, to compile from source, Intel MKL must be installed on your machine.
-
-#####How to compile from source
-1. Use a terminal to cd into the src folder, and run the command `make` which will build the software in that folder.
-2. Export the `LD_LIBRARY_PATH` or (on OS X)  `DYLD_LIBRARY_PATH` so that the new executable can find the
-   necessary dynamic libraries in the `lib` folder. For example:
-  ` export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/user/Downloads/fastPCA/lib"`. 
+* Intel Math Kernel Library: Highly optimized implementations of BLAS and LAPACK (Free download [here](https://software.intel.com/sites/campaigns/nest/) ).  The `lib` folder contains a [custom built shared library](https://software.intel.com/en-us/node/528690), but the headers cannot be distributed.  As such, to compile from source, Intel MKL must be installed on your machine.  To recompile the custom built shared library, follow the instructions in lib/generate_custom_mkl.sh
 
 ####Note
 The code base uses the LAPACKE interface for LAPACK as opposed to the f2c
