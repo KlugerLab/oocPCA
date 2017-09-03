@@ -7,7 +7,7 @@ Two interfaces are available, via an R wrapper called oocRPCA and by
 commandline.   OS X and Linux users can install the pre-compiled binaries,
 following the processes outlined below:
 
-##R Package Installation
+## R Package Installation
 ```R
 if(!require(devtools)) install.packages("devtools") # If not already installed
 devtools::install_github("linqiaozhi/fmmRtsne", auth_token = "df6fb169997c1c59d34c6dc7254657cdf54ae8f1")
@@ -21,7 +21,7 @@ OR:
 
 Please see the documentation for usage: `?oocPCA_CSV`
 
-###R Testing Suite
+## R Testing Suite
 Test cases for this software use the popular testing package `testthat`:
 
 ```R
@@ -29,7 +29,7 @@ if(!require(testthat)) install.packages('testthat')
 testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="oocRPCA")))
 ```
 
-##Features
+## Features
 * Variety of input formats and use cases
   * CSV format
   * plink's binary [BED format] (http://pngu.mgh.harvard.edu/~purcell/plink/binary.shtml) for GWAS data. 
@@ -41,16 +41,13 @@ testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="oocRPCA"
 * Imputation by averaging of missing data for GWAS
 
 
-##Development
-###Compiling from source
-####OSX
-#####Prerequisities:
-* Intel Math Kernel Library: Highly optimized implementations of BLAS and LAPACK (Free download [here](https://software.intel.com/sites/campaigns/nest/) ).  The `lib` folder contains a [custom built shared library](https://software.intel.com/en-us/node/528690), but the headers cannot be distributed.  As such, to compile from source, Intel MKL must be installed on your machine.  To recompile the custom built shared library, follow the instructions in lib/generate_custom_mkl.sh
+## Development
+### Compiling from source
+This implementation relies heavily on a highly optimized implementations of BLAS and LAPACK called Intel Math Kernel Library (MKL) (Free download [here](https://software.intel.com/sites/campaigns/nest/) ).  The `lib` folder contains a [custom built shared library](https://software.intel.com/en-us/node/528690), but the headers cannot be distributed.  As such, to compile from source, Intel MKL must be installed on your machine.  To recompile the custom built shared library, follow the instructions in lib/generate_custom_mkl.sh
 
-####Note
-The code base uses the LAPACKE interface for LAPACK as opposed to the f2c
-generated LAPACK functions.  The OS X Accelerate Framework does not include the
-former, and hence, we use Intel MKL in lieu of OS X Accelerate Framework. 
+#### Note
+The code base uses the LAPACKE interface for LAPACK as opposed to the f2c generated LAPACK functions.  The OS X Accelerate Framework does not include the former, and hence, we use Intel MKL in lieu of OS X Accelerate Framework. 
 
-##TODO
-* Transition from LAPACKE to the CLAPACK f2c'd functions, allowing linkage with OS X Accelerate Framework
+## TODO
+* Windows Support
+
