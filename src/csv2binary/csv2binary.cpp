@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include "ezOptionParser.hpp"
-using namespace std::chrono;
    int main(int argc, const char * argv[]) {
 		using namespace ez;
 		ezOptionParser opt;

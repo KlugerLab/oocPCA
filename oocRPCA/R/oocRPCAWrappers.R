@@ -87,9 +87,14 @@ oocPCA_CSV<- function (inputFile,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centerin
 		    stop("Both centeringRow and centeringColumn cannot be TRUE");
 	}
 
+	if (Sys.info()["sysname"] == 'Darwin') {
+		executable <- 'fastpca.osx'
+	}else{
+		executable <- 'fastpca.linux'
+	}
 
 	base_outname = "oocRPCA.binmatrix"
-	pcacall <- sprintf('%s/fastpca.xx -k %d -csvI %s -binaryOutput %s -mem %d -l %d -its %d', system.file("build", package="oocRPCA"), k, inputFile, base_outname, mem , l, its )
+	pcacall <- sprintf('%s/%s -k %d -csvI %s -binaryOutput %s -mem %d -l %d -its %d', system.file("build", package="oocRPCA"), executable, k, inputFile, base_outname, mem , l, its )
 	if (identical(TRUE, centeringRow)) {
 		pcacall <- paste(pcacall, " -center",  sep="")
 	}else if (identical(TRUE, centeringColumn)) {
@@ -120,7 +125,12 @@ oocPCA_csv2binary<- function (inputFile,outputFile) {
 	if (!file.exists(inputFile)) {
 		stop("File does not exist");
 	}
-	system(sprintf('%s/csv2binary.xx -csvI %s -binO %s',system.file("build", package="oocRPCA"), inputFile, outputFile ))
+	if (Sys.info()["sysname"] == 'Darwin') {
+		executable <- 'csv2binary.osx'
+	}else{
+		executable <- 'csv2binary.linux'
+	}
+	system(sprintf('%s/%s -csvI %s -binO %s',system.file("build", package="oocRPCA"), executable, inputFile, outputFile ))
 }
 
 
@@ -185,9 +195,14 @@ oocPCA_BIN<- function (inputFile,m, n,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,cen
 	}
 	#TODO: check if m*n*8 = filesize
 
+	if (Sys.info()["sysname"] == 'Darwin') {
+		executable <- 'fastpca.osx'
+	}else{
+		executable <- 'fastpca.linux'
+	}
 
 	base_outname = "oocRPCA.binmatrix"
-	pcacall <- sprintf('%s/fastpca.xx -m %d -n %d -k %d -binaryI %s -binaryOutput %s -mem %d -l %d -its %d', system.file("build", package="oocRPCA"), m, n, k, inputFile, base_outname, mem , l, its )
+	pcacall <- sprintf('%s/%s -m %d -n %d -k %d -binaryI %s -binaryOutput %s -mem %d -l %d -its %d', system.file("build", package="oocRPCA"), executable, m, n, k, inputFile, base_outname, mem , l, its )
 	if (identical(TRUE, centeringRow)) {
 		pcacall <- paste(pcacall, " -center",  sep="")
 	}else if (identical(TRUE, centeringColumn)) {

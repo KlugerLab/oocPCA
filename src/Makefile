@@ -14,21 +14,25 @@ CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.dylib"'
 #@executable_path is $origin in linux
 LIBS =  -L../lib -m64 -Wl,-rpath,'@executable_path/../lib' -lfastpca_custommkl -L../lib -liomp5 -ldl -lpthread -lm -DMKL_ILP64 
 CC = clang-omp++
+EXE_TARGET = ../build/fastpca.osx
+CSV_BINARY_TARGET = csv2binary.osx
 else
 
 #Linux
 CFLAGS+=-DMKL_CUSTOM_LIBRARY='"libfastpca_custommkl.so"'
 EXE_INCLUDEPATH = -I../include -I/opt/intel/composer_xe_2015.1.133/mkl/include/
 #LIBS =  -Wl,--no-as-needed  -L../lib -lfastpca_custommkl -liomp5 -ldl -lpthread -lm -Wl,-rpath,/data/Linderman/FastPCA5/FastPCA/lib
-LIBS =  -Wl,--no-as-needed  -L../lib -lfastpca_custommkl -liomp5 -ldl -lpthread 
+#LIBS =  -Wl,--no-as-needed  -L../lib -lfastpca_custommkl -liomp5 -ldl -lpthread 
+LIBS =  -L../lib -m64 -Wl,-R,'$$ORIGIN/../lib' -lfastpca_custommkl -liomp5 -ldl -lpthread -lm 
 CC = g++
+EXE_TARGET = ../build/fastpca.linux
+CSV_BINARY_TARGET = csv2binary.linux
 
 endif
 
 
 EXE_CPP_FILES := $(wildcard *.cpp)
 EXE_OBJ_FILES := $(addprefix ../build/,$(notdir $(EXE_CPP_FILES:.cpp=.o)))
-EXE_TARGET = ../build/fastpca.xx
 
 
 all: EXE_target csv2binary
@@ -42,8 +46,8 @@ clean:
 EXE_target: $(EXE_OBJ_FILES) 
 	$(CC) $(CFLAGS) -o $(EXE_TARGET) $(EXE_OBJ_FILES) $(LIBS)
 	cp $(EXE_TARGET) ../oocRPCA/inst/build/$(EXE_TARGET)
-	g++ -I../include -o ../build/csv2binary.xx csv2binary/csv2binary.cpp
-	cp ../build/csv2binary.xx ../oocRPCA/inst/build/csv2binary.xx
+	g++ -I../include -o ../build/$(CSV_BINARY_TARGET) csv2binary/csv2binary.cpp
+	cp ../build/$(CSV_BINARY_TARGET) ../oocRPCA/inst/build/$(CSV_BINARY_TARGET)
 
 #Link the objects into the final R library
 
