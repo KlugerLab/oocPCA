@@ -94,7 +94,7 @@ oocPCA_CSV<- function (inputFile,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centerin
 	}
 
 	base_outname = "oocRPCA.binmatrix"
-	pcacall <- sprintf('%s/%s -k %d -csvI %s -binaryOutput %s -mem %d -l %d -its %d', system.file("build", package="oocRPCA"), executable, k, inputFile, base_outname, mem , l, its )
+	pcacall <- sprintf('%s/%s -k %d -csvI %s -binaryOutput %s -mem %0.f -l %d -its %d', system.file("build", package="oocRPCA"), executable, k, inputFile, base_outname, mem , l, its )
 	if (identical(TRUE, centeringRow)) {
 		pcacall <- paste(pcacall, " -center",  sep="")
 	}else if (identical(TRUE, centeringColumn)) {
@@ -202,7 +202,7 @@ oocPCA_BIN<- function (inputFile,m, n,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,cen
 	}
 
 	base_outname = "oocRPCA.binmatrix"
-	pcacall <- sprintf('%s/%s -m %d -n %d -k %d -binaryI %s -binaryOutput %s -mem %d -l %d -its %d', system.file("build", package="oocRPCA"), executable, m, n, k, inputFile, base_outname, mem , l, its )
+	pcacall <- sprintf('%s/%s -m %d -n %d -k %d -binaryI %s -binaryOutput %s -mem %0.f -l %d -its %d', system.file("build", package="oocRPCA"), executable, m, n, k, inputFile, base_outname, mem , l, its )
 	if (identical(TRUE, centeringRow)) {
 		pcacall <- paste(pcacall, " -center",  sep="")
 	}else if (identical(TRUE, centeringColumn)) {

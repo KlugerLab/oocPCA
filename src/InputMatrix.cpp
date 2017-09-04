@@ -16,7 +16,7 @@ InputMatrix::InputMatrix(std::string p, long long maxMemoryBytes)
 int InputMatrix::loadNextBlock () {
 	//fastpca_debug_print("%s", "Preprocess new block\n");
 	if (this->logTransform) {
-		for (int i = 0; i<this->blockSize*this->n; i++){
+		for (long long int i = 0; i<this->blockSize*this->n; i++){
 			//printf("Log transforming: %lf", this->block[i]);
 			this->block[i] = log(this->block[i] +1);
 			//printf("After Log transforming: %lf", this->block[i]);
