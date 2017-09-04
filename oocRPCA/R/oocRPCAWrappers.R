@@ -44,6 +44,7 @@ oocPCA_base <- function( base_outname, k) {
 #' @param diffsnorm Calculate 2-norm accuracy, i.e. ||A-USV||_2. 
 #' @param centeringRow Center the rows prior to decomposition.
 #' @param centeringColumn Center the columns prior to decomposition.
+#' @param logTransform add 1 to every value and then take the log
 #' @return A list containing the decomposition.
 #' @examples
 #' 
@@ -61,7 +62,7 @@ oocPCA_base <- function( base_outname, k) {
 #' norm( D - fastDecomp$U %*% fastDecomp$S %*% t(fastDecomp$V))
 #' unlink(fn)
 #' @export
-oocPCA_CSV<- function (inputFile,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
+oocPCA_CSV<- function (inputFile,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE, logTransform = FALSE) {
 	if (!file.exists(inputFile)) {
 		stop("File does not exist");
 	}
@@ -94,6 +95,10 @@ oocPCA_CSV<- function (inputFile,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centerin
 	}else if (identical(TRUE, centeringColumn)) {
 		pcacall <- paste(pcacall, " -ccenter",  sep="")
 	}
+	if (identical(TRUE, logTransform)) {
+		pcacall <- paste(pcacall, " -log",  sep="")
+	}
+	
 	pcareturn <- system(pcacall);
 	if (pcareturn != 1) {
 		stop(sprintf("An unkonwn error has occurred during call: %s", pcacall));
@@ -133,6 +138,7 @@ oocPCA_csv2binary<- function (inputFile,outputFile) {
 #' @param diffsnorm Calculate 2-norm accuracy, i.e. ||A-USV||_2. 
 #' @param centeringRow Center the rows prior to decomposition.
 #' @param centeringColumn Center the columns prior to decomposition.
+#' @param logTransform add 1 to every value and then take the log
 #' @return A list containing the decomposition.
 #' @examples
 #' 
@@ -153,7 +159,7 @@ oocPCA_csv2binary<- function (inputFile,outputFile) {
 #'unlink(fn)
 #'unlink(fnb)
 #' @export
-oocPCA_BIN<- function (inputFile,m, n,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE) {
+oocPCA_BIN<- function (inputFile,m, n,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centeringRow=FALSE, centeringColumn = FALSE, logTransform = FALSE) {
 	if (!file.exists(inputFile)) {
 		stop("File does not exist");
 	}
@@ -187,6 +193,10 @@ oocPCA_BIN<- function (inputFile,m, n,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,cen
 	}else if (identical(TRUE, centeringColumn)) {
 		pcacall <- paste(pcacall, " -ccenter",  sep="")
 	}
+	if (identical(TRUE, logTransform)) {
+		pcacall <- paste(pcacall, " -log",  sep="")
+	}
+	
 	pcareturn <- system(pcacall);
 	if (pcareturn != 1) {
 		stop(sprintf("An unkonwn error has occurred during call: %s", pcacall));

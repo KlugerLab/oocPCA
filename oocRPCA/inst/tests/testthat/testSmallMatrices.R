@@ -4,40 +4,44 @@ context("Small CSV matrices")
 testDim <- c(50, 100)
 for (m in testDim){
 	for (n in testDim){
-
-
-
 		k_ <- 20;
 		B <- matrix(rexp(m*k_), m)
 		C <- matrix(rexp(k_*n), k_)
-		D <- B %*%C;
-		fn = "test_csv.csv"
-		write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
-
-		memories <- c(5*n*8 +2342 , 100*n*8, 1E9)
-
-		for (centering in c(0,1,2)){
-
-			if (centering == 0 ){
-				rowCentering_ <- FALSE;
-				colCentering_ <- FALSE;
-				Dt <- D;
-			}else if (centering ==1){
-				rowCentering_ <- TRUE;
-				colCentering_ <- FALSE;
-				Dt <- t(scale(t(D), center=TRUE, scale=FALSE));
-			}else {
-				rowCentering_ <- FALSE;
-				colCentering_ <- TRUE;
-				Dt <- scale(D, center=TRUE, scale=FALSE);
+		for (logT in c(FALSE,TRUE)) {
+			Dt <- B%*%C;
+			if (logT) {
+				D <-exp( Dt) -1;
+			}else{
+				D <- Dt;
 			}
+			fn = "test_csv.csv"
+			write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
 
-			for (mem in memories) {
-				fastDecomp <- oocPCA_CSV(fn, k=k_, mem=mem, diffsnorm=TRUE, centeringColumn = colCentering_, centeringRow = rowCentering_)
-				diffNorm <- norm(Dt - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
-				test_that( sprintf("CSV - m: %d, n: %d, k: %d, mem %d, centeringRow :%d, centeringCol: %d", fastDecomp$dims[1], fastDecomp$dims[2], k_, mem, rowCentering_, colCentering_), {
-						  expect_that(diffNorm,equals(0));
+			memories <- c(5*n*8 +2342 , 100*n*8, 1E9)
+
+			for (centering in c(0,1,2)){
+
+				if (centering == 0 ){
+					rowCentering_ <- FALSE;
+					colCentering_ <- FALSE;
+					Dtt <- Dt;
+				}else if (centering ==1){
+					rowCentering_ <- TRUE;
+					colCentering_ <- FALSE;
+					Dtt <- t(scale(t(Dt), center=TRUE, scale=FALSE));
+				}else {
+					rowCentering_ <- FALSE;
+					colCentering_ <- TRUE;
+					Dtt <- scale(Dt, center=TRUE, scale=FALSE);
+				}
+
+				for (mem in memories) {
+					fastDecomp <- oocPCA_CSV(fn, k=k_, mem=mem, diffsnorm=TRUE, centeringColumn = colCentering_, centeringRow = rowCentering_, logTransform = logT)
+					diffNorm <- norm(Dtt - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
+					test_that( sprintf("CSV - m: %d, n: %d, k: %d, mem %d, centeringRow :%d, centeringCol: %d, logTransform: %s", fastDecomp$dims[1], fastDecomp$dims[2], k_, mem, rowCentering_, colCentering_, ifelse(logT, "TRUE", "FALSE")), {
+							  expect_that(diffNorm,equals(0));
 })
+				}
 			}
 		}
 		unlink(fn)
@@ -51,37 +55,44 @@ for (m in testDim){
 		k_ <- 20;
 		B <- matrix(rexp(m*k_), m)
 		C <- matrix(rexp(k_*n), k_)
-		D <- B %*%C;
-		fn = "test_csv.csv"
-		fnb = "test_csv.binmatrix"
-		write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
-		oocPCA_csv2binary(fn, fnb);
-		memories <- c(m*n*8/2, m*n*8/10, 1E9)
-		for (centering in c(0,1,2)){
-			if (centering == 0 ){
-				rowCentering_ <- FALSE;
-				colCentering_ <- FALSE;
-				Dt <- D;
-			}else if (centering ==1){
-				rowCentering_ <- TRUE;
-				colCentering_ <- FALSE;
-				Dt <- t(scale(t(D), center=TRUE, scale=FALSE));
-			}else {
-				rowCentering_ <- FALSE;
-				colCentering_ <- TRUE;
-				Dt <- scale(D, center=TRUE, scale=FALSE);
+		Dt <- B%*%C;
+		for (logT in c(FALSE,TRUE)) {
+			if (logT) {
+				D <-exp( Dt) -1;
+			}else{
+				D <- Dt;
 			}
+			fn = "test_csv.csv"
+			fnb = "test_csv.binmatrix"
+			write.table(D,file=fn,sep=',',col.names=FALSE, row.names=FALSE)
+			oocPCA_csv2binary(fn, fnb);
+			memories <- c(m*n*8/2, m*n*8/10, 1E9)
+			for (centering in c(0,1,2)){
+				if (centering == 0 ){
+					rowCentering_ <- FALSE;
+					colCentering_ <- FALSE;
+					Dtt <- Dt;
+				}else if (centering ==1){
+					rowCentering_ <- TRUE;
+					colCentering_ <- FALSE;
+					Dtt <- t(scale(t(Dt), center=TRUE, scale=FALSE));
+				}else {
+					rowCentering_ <- FALSE;
+					colCentering_ <- TRUE;
+					Dtt <- scale(Dt, center=TRUE, scale=FALSE);
+				}
 
-			for (mem in memories) {
-				fastDecomp <- oocPCA_BIN(fnb,m,n, k=k_, mem=mem, centeringColumn = colCentering_, centeringRow = rowCentering_)
-				diffNorm <- norm(Dt - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
-				test_that( sprintf("CSV - m: %d, n: %d, k: %d, mem %d, centeringRow :%d, centeringCol: %d", fastDecomp$dims[1], fastDecomp$dims[2], k_, mem, rowCentering_, colCentering_), {
-						  expect_that(diffNorm,equals(0));
-})
+				for (mem in memories) {
+					fastDecomp <- oocPCA_BIN(fnb,m,n, k=k_, mem=mem, centeringColumn = colCentering_, centeringRow = rowCentering_, logTransform = logT)
+					diffNorm <- norm(Dtt - fastDecomp$U %*% fastDecomp$S %*%t(fastDecomp$V), type='2')
+					test_that( sprintf("Binary - m: %d, n: %d, k: %d, mem %d, centeringRow :%d, centeringCol: %d, logTransform: %s", fastDecomp$dims[1], fastDecomp$dims[2], k_, mem, rowCentering_, colCentering_, ifelse(logT, "TRUE", "FALSE")), {
+							  expect_that(diffNorm,equals(0));
+	})
+				}
 			}
+			unlink(fn)
+			unlink(fnb)
 		}
-		unlink(fn)
-		unlink(fnb)
 	}
 }
 

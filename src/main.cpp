@@ -40,6 +40,8 @@
  *                                must be positive integer >=k.  Defaults to k+2
  *  
  *  -c, -center, --center         Center the rows of the matrix
+ *  
+ *  -log, -logTransform, --logTransform        Replace each value in the matrix with log (1 + value).
  *
  *  -d, -diffnorm, --diffnorm     Calculate the L2 norm of A-USV as a measure of the
  *                                accuracy of the decomposition
@@ -246,6 +248,16 @@ using namespace std::chrono;
 			"-cc",     // Flag token. 
 			"-ccenter",  // Flag token.
 			"--ccenter" // Flag token.
+	       );
+	opt.add(
+			"", // Default.
+			0, // Required?
+			0, // Number of args expected.
+			0, // Delimiter if expecting multiple args.
+			"Log transform of the data", // Help description.
+			"-log",     // Flag token. 
+			"-logTransform",  // Flag token.
+			"--logTransform" // Flag token.
 	       );
 	opt.add(
 			"", // Default.
@@ -523,6 +535,10 @@ using namespace std::chrono;
 	if (opt.isSet("-c")) {
 		inputMatrix->centerRowsOn();	
 		fastpca_debug_print("%s", "Centering rows: True\n");
+	}
+	if (opt.isSet("-log")) {
+		inputMatrix->logTransformOn();	
+		fastpca_debug_print("%s", "Log transform: True\n");
 	}
 	int info = inputMatrix->init();
 	if (opt.isSet("-cc")){

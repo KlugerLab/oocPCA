@@ -11,9 +11,17 @@ InputMatrix::InputMatrix(std::string p, long long maxMemoryBytes)
 {
 	centerRows = false;
 	imputeMissing = false;
+	logTransform = false;
 }
 int InputMatrix::loadNextBlock () {
 	//fastpca_debug_print("%s", "Preprocess new block\n");
+	if (this->logTransform) {
+		for (int i = 0; i<this->blockSize*this->n; i++){
+			//printf("Log transforming: %lf", this->block[i]);
+			this->block[i] = log(this->block[i] +1);
+			//printf("After Log transforming: %lf", this->block[i]);
+		}
+	}
 	preprocessBlock();
 	return 1;
 }
@@ -107,6 +115,7 @@ bool InputMatrix::centerColumns() {
 }
 
 int InputMatrix::preprocessBlock() {
+
 	
 	if (!this->imputeMissing && !this->centerRows && !this->centerColumnsFlag){
 		return 1;
@@ -210,6 +219,9 @@ bool InputMatrix::hasNext() {
 
 void InputMatrix::imputeMissingOn() {
 	this->imputeMissing = true;
+}
+void InputMatrix::logTransformOn() {
+	this->logTransform = true;
 }
 void InputMatrix::centerRowsOn() {
 	this->centerRows = true;

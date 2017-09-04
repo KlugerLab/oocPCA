@@ -92,6 +92,7 @@ class InputMatrix {
 		void imputeMissingOn();
 		void centerRowsOn();
 		bool centerColumns();
+		void logTransformOn();
 
 
 	protected:
@@ -141,6 +142,7 @@ class InputMatrix {
 
 	private:
 		bool centerRows;
+		bool logTransform;
 		bool centerColumnsFlag;
 		bool imputeMissing;
 };

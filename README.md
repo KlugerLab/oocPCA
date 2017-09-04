@@ -49,5 +49,7 @@ This implementation relies heavily on a highly optimized implementations of BLAS
 The code base uses the LAPACKE interface for LAPACK as opposed to the f2c generated LAPACK functions.  The OS X Accelerate Framework does not include the former, and hence, we use Intel MKL in lieu of OS X Accelerate Framework. 
 
 ## TODO
+* Ignore column and row headers for the CSV input
 * Windows Support
+
 
