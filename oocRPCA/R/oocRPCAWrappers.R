@@ -91,6 +91,7 @@ oocPCA_CSV<- function (inputFile,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,centerin
 		executable <- 'fastpca.osx'
 	}else{
 		executable <- 'fastpca.linux'
+		system(sprintf("chmod u+x %s/%s",system.file("build", package="oocRPCA"), executable));
 	}
 
 	base_outname = "oocRPCA.binmatrix"
@@ -129,6 +130,7 @@ oocPCA_csv2binary<- function (inputFile,outputFile) {
 		executable <- 'csv2binary.osx'
 	}else{
 		executable <- 'csv2binary.linux'
+		system(sprintf("chmod u+x %s/%s",system.file("build", package="oocRPCA"), executable));
 	}
 	system(sprintf('%s/%s -csvI %s -binO %s',system.file("build", package="oocRPCA"), executable, inputFile, outputFile ))
 }
@@ -199,6 +201,7 @@ oocPCA_BIN<- function (inputFile,m, n,k=5, l, mem=2e9, its=2,diffsnorm=FALSE,cen
 		executable <- 'fastpca.osx'
 	}else{
 		executable <- 'fastpca.linux'
+		system(sprintf("chmod u+x %s/%s",system.file("build", package="oocRPCA"), executable));
 	}
 
 	base_outname = "oocRPCA.binmatrix"
