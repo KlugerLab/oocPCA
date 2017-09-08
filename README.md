@@ -10,7 +10,7 @@ following the processes outlined below:
 ## R Package Installation
 ```R
 if(!require(devtools)) install.packages("devtools") # If not already installed
-devtools::install_github("linqiaozhi/fmmRtsne", auth_token = "df6fb169997c1c59d34c6dc7254657cdf54ae8f1")
+devtools::install_github("linqiaozhi/oocRtsne", auth_token = "df6fb169997c1c59d34c6dc7254657cdf54ae8f1")
 ```
 
 OR:

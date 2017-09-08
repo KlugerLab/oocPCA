@@ -114,9 +114,12 @@ using namespace std::chrono;
 			//A(blockSize,n)*Q (n,l)
 			//printf("%d, %d,%d\n", A->blockStart, A->blockSize, l); 
 			fastpca_gemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, A->blockSize,l,A->n, 1.0, A->block,A->n,Q,l, 0.0,&(Q_temp[A->blockStart*l]) ,l);
-			//fastpca_print_matrix("Error Debug2", A->blockSize,l, Q_temp+A->blockStart*l);
-			//fastpca_print_matrix("Error Debug3", m,l, Q_temp);
+			//fastpca_print_matrix("A", A->blockSize,A->n, A->block);
+			//fastpca_print_matrix("B", A->blockSize,l, Q_temp+A->blockStart*l);
+			fastpca_gemm(CblasRowMajor, CblasTrans, CblasNoTrans, A->n,l,A->blockSize, 1.0, A->block,A->n,&(Q_temp[A->blockStart*l]),l, 1.0,Q_temp2 ,l);
+			//fastpca_print_matrix("C", A->n,l, Q_temp2);
 		}
+		/*
 		int info = fastpca_lu_l(m,l,Q_temp);
 		if (info < 0 ){
 			//printf("m:%d, n:%d, l:%d, blockSize %d\n", m,n,l,A->blockSize);
@@ -129,6 +132,7 @@ using namespace std::chrono;
 			//A(blockSize,n)*Q (n,l)
 			fastpca_gemm(CblasRowMajor, CblasTrans, CblasNoTrans, A->n,l,A->blockSize, 1.0, A->block,A->n,&(Q_temp[A->blockStart*l]),l, 1.0,Q_temp2 ,l);
 		}
+		*/
 		/*
 		while (A->hasNext()){
 			//A(blockSize,n)*Q (n,l)
