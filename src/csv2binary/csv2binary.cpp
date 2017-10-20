@@ -43,9 +43,9 @@
 	//printf("Converting CSV to binary");
 	std::ifstream inCSV;
 	   inCSV.open(inputFile.c_str(), std::ios::in);
-	int eachLineN=0;
-	int m =0;
-	int n=0;
+	long int eachLineN=0;
+	long int m =0;
+	long int n=0;
 	char ch;
 	while(inCSV >> std::noskipws >> ch ) {
 	//	std::cout << ch << std::endl;
@@ -70,8 +70,8 @@
 	//printf("Converting CSV file with %d rows and %d columns into binary format.\n", m,n);
 
 	double * block = (double*) malloc(m*n*sizeof(double));
-	int i = 0;
-	int j = 0;
+	long int i = 0;
+	long int j = 0;
 	double num;
 	while(inCSV>> std::noskipws >> num ) {
 		block[(long long)i*n+j] = num;
