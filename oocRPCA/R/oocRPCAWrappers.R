@@ -18,7 +18,6 @@ oocPCA_base <- function( base_outname, k) {
 	Vfile = file(sprintf("%s.V", base_outname), "rb")
 	V = t(matrix(readBin(Vfile, numeric(),size=8, n=(n*k*8) ),k));
 	close(Vfile)
-	reformed <- U %*% S %*% t(V);
 	unlink(sprintf("%s.U", base_outname));
 	unlink(sprintf("%s.S", base_outname));
 	unlink(sprintf("%s.V", base_outname));
