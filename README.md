@@ -1,4 +1,4 @@
-# FastPCA
+# oocPCA
 oocPCA is a Intel MKL-based, out-of-core C++ implementation of randomized
 SVD for rank-k approximation of matrices that are too large to fit into
 memory.
@@ -42,6 +42,10 @@ testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="oocRPCA"
 
 ## References
 If you use oocPCA, please cite:
+
+George C. Linderman, Manas Rachh, Jeremy G. Hoskins, Stefan Steinerberger, Yuval Kluger. (2017). Efficient Algorithms for t-distributed Stochastic Neighborhood Embedding. arXiv preprint.
+
+
 
 ## Development
 ### Compiling from source
