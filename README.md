@@ -10,7 +10,7 @@ following the processes outlined below:
 ## R Package Installation
 ```R
 if(!require(devtools)) install.packages("devtools") # If not already installed
-devtools::install_github("linqiaozhi/oocRtsne", auth_token = "df6fb169997c1c59d34c6dc7254657cdf54ae8f1")
+devtools::install_github("KlugerLab/oocPCA")
 ```
 
 OR:
@@ -40,13 +40,13 @@ testthat::test_dir(sprintf("%s/testthat", system.file("tests", package="oocRPCA"
 * Row-centering and column-centering
 * Imputation by averaging of missing data for GWAS
 
+## References
+If you use oocPCA, please cite:
 
 ## Development
 ### Compiling from source
 This implementation relies heavily on a highly optimized implementations of BLAS and LAPACK called Intel Math Kernel Library (MKL) (Free download [here](https://software.intel.com/sites/campaigns/nest/) ).  The `lib` folder contains a [custom built shared library](https://software.intel.com/en-us/node/528690), but the headers cannot be distributed.  As such, to compile from source, Intel MKL must be installed on your machine.  To recompile the custom built shared library, follow the instructions in lib/generate_custom_mkl.sh
 
-#### Note
-The code base uses the LAPACKE interface for LAPACK as opposed to the f2c generated LAPACK functions.  The OS X Accelerate Framework does not include the former, and hence, we use Intel MKL in lieu of OS X Accelerate Framework. 
 
 ## TODO
 * Ignore column and row headers for the CSV input
